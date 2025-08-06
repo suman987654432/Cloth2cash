@@ -58,7 +58,7 @@ const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showContro
 
   return (
     <>
-      <div className="relative w-full max-w-screen-7xl mx-auto bg-white rounded-xl lg:rounded-3xl shadow-2xl lg:shadow-3xl overflow-hidden h-[90vh] lg:h-[92vh] min-h-[600px] lg:min-h-[400px] max-h-[900px] border border-gray-100">
+      <div className="relative w-full max-w-screen-7xl mx-auto bg-white rounded-xl lg:rounded-3xl  overflow-hidden h-[90vh] lg:h-[92vh] min-h-[600px] lg:min-h-[400px] max-h-[900px] border border-gray-100">
         <div
           className="flex transition-transform duration-700 ease-in-out h-full"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
