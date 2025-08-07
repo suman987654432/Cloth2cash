@@ -19,10 +19,7 @@ const Footer = () => {
             <p className="text-gray-200 text-base leading-relaxed mb-6">
               Transform your unused clothes into cash! We make it easy to sell your pre-loved garments while contributing to sustainable fashion.
             </p>
-            <div className="flex items-center space-x-3 text-base text-gray-300">
-              <FaClock className="text-orange-400 text-lg" />
-              <span>Mon-Sat: 9AM-7PM</span>
-            </div>
+           
           </div>
 
           {/* Services Links */}
@@ -57,7 +54,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-4">
                 <FaPhone className="text-orange-400 flex-shrink-0 text-lg" />
-                <span>+91 98765 43210</span>
+                <span>+91 6299974421</span>
               </div>
               <div className="flex items-center space-x-4">
                 <FaMapMarkerAlt className="text-orange-400 flex-shrink-0 text-lg" />

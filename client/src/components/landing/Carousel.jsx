@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import slide1 from "../../assets/slide1.png";
+import slide2 from "../../assets/slide2.png";
 import Button from '../ui/Button';
 
 const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showControls = true, showDots = true }) => {
@@ -18,7 +19,7 @@ const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showContro
       id: 2,
       heading: "<span class='text-green-600 font-extrabold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent'>Cloth2Cash</span>: Recycle & Earn",
       content: "We make it easy for you to give away old clothes from your doorstep — and earn money for every kilo!",
-      image: slide1,
+      image: slide2,
       bgColor: "bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50",
       accentColor: "text-green-600"
     },
