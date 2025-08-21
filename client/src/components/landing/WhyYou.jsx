@@ -5,6 +5,7 @@ import tree from "../../assets/tree.png";
 import weight from "../../assets/weighing-machine.png";
 import waste from "../../assets/zero-waste.png";
 import FeatureCard from '../ui/Ccard';
+import SectionHeader from '../../components/ui/SectionHeader';
 
 const features = [
     {
@@ -54,13 +55,11 @@ const WhyYou = () => {
             <div className="absolute bottom-0 left-1/2 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
 
             <div className="max-w-7xl mx-auto text-center relative z-10">
-                <div className="mb-10 sm:mb-12 md:mb-16">
-                    <p className="text-orange-500 font-bold mb-3 sm:mb-4 text-lg sm:text-xl tracking-wider uppercase">WHY US?</p>
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-orange-600 to-gray-800 bg-clip-text text-transparent mb-4 sm:mb-5 md:mb-6">
-                        Why you should sell to us?
-                    </h2>
-                    <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto rounded-full"></div>
-                </div>
+                <SectionHeader
+                    subtitle="WHY US?"
+                    title="Why you should sell to us?"
+                // className="[&_p]:text-orange-500 [&_h2]:bg-gradient-to-r [&_h2]:from-gray-800 [&_h2]:via-orange-600 [&_h2]:to-gray-800 [&_div]:bg-gradient-to-r [&_div]:from-orange-400 [&_div]:to-red-500"
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 md:gap-16 text-left">
                     {features.map((item, index) => (
@@ -74,11 +73,12 @@ const WhyYou = () => {
                     ))}
                 </div>
 
-
             </div>
         </section>
     );
 };
 
 export default WhyYou;
+
+
 
