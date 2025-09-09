@@ -92,8 +92,8 @@ const SchedulePage = () => {
                             {[1, 2, 3, 4].map((step) => (
                                 <div key={step} className="flex items-center">
                                     <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-bold text-sm sm:text-base transition-all duration-300 shadow-lg ${currentStep >= step
-                                            ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-green-400/50 scale-110'
-                                            : 'bg-white text-gray-400 border-2 border-gray-200'
+                                        ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-green-400/50 scale-110'
+                                        : 'bg-white text-gray-400 border-2 border-gray-200'
                                         }`}>
                                         {step === 4 ? <CheckCircle size={16} className="sm:w-6 sm:h-6" /> : step}
                                     </div>

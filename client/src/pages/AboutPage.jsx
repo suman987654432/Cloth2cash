@@ -22,7 +22,7 @@ const AboutPage = () => {
         
         {/* Hero Content */}
         <div className="relative z-10 text-center text-white px-4 max-w-5xl mx-auto">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold mb-6 leading-tight">
             About <span className="text-yellow-400">Cloth2Cash</span>
           </h1>
           
@@ -68,12 +68,12 @@ const AboutPage = () => {
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <SectionHeader 
-            subtitle="OUR VISION"
+            // subtitle="OUR VISION"
             title="Our Vision"
             description="To build a future where no fabric is wasted, and sustainable fashion becomes a way of life for every household."
-            subtitleColor="text-yellow-600"
-            titleGradient="from-gray-800 via-yellow-600 to-gray-800"
-            underlineGradient="from-yellow-400 to-orange-500"
+            // subtitleColor="text-yellow-600"
+            // titleGradient="from-gray-800 via-yellow-600 to-gray-800"
+            // underlineGradient="from-yellow-400 to-orange-500"
             className="[&_p:last-child]:text-2xl [&_p:last-child]:md:text-3xl [&_p:last-child]:font-medium [&_p:last-child]:max-w-4xl"
           />
         </div>
