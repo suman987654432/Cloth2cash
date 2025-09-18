@@ -6,7 +6,7 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-[70vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+      <div className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
         {/* Background Image with Blur */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -18,17 +18,23 @@ const AboutPage = () => {
         ></div>
         
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-black/50"></div>
         
         {/* Hero Content */}
-        <div className="relative z-10 text-center text-white px-4 max-w-5xl mx-auto">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold mb-6 leading-tight">
+        <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
             About <span className="text-yellow-400">Cloth2Cash</span>
           </h1>
           
-          <p className="text-xl md:text-3xl lg:text-4xl mb-8 text-gray-200 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-2xl lg:text-3xl mb-8 text-gray-200 max-w-3xl mx-auto leading-relaxed">
             Making clothing disposal simple, rewarding, and sustainable
           </p>
+        </div>
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
         </div>
       </div>
 

@@ -34,7 +34,7 @@ const Login = () => {
         className="relative z-10 w-full max-w-md bg-white/40 backdrop-blur-xl rounded-3xl shadow-2xl p-10 flex flex-col gap-7 border border-white/50"
       >
         <div className="flex flex-col items-center mb-2">
-          <div className="text-4xl mb-2 text-blue-500">🔒</div>
+          {/* <div className="text-4xl mb-2 text-blue-500">🔒</div> */}
           <h2 className="text-3xl font-bold text-gray-800 mb-1">Login</h2>
           <p className="text-gray-700 text-base">Welcome back! Please login to your account.</p>
         </div>

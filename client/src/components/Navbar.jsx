@@ -11,19 +11,17 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-18 md:h-20">
           
-          {/* Logo + Brand Name */}
-          <div className="flex items-center">
+         
+          <Link to="/" className="flex items-center group">
             <img 
               src={logo} 
               alt="Cloth2Cash Logo" 
-              className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto mr-2 sm:mr-3 drop-shadow-md hover:scale-105 transition-transform duration-300"
-
+              className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto mr-2 sm:mr-3 drop-shadow-md hover:scale-105 transition-transform duration-300 group-hover:scale-105"
             />
-          <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
-  Cloth<span className="text-green-600">2</span>Cash
-</span>
-
-          </div>
+            <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
+              Cloth<span className="text-green-600">2</span>Cash
+            </span>
+          </Link>
 
           {/* Desktop Navigation Links */}
           <div className="hidden lg:flex space-x-4 xl:space-x-8 text-gray-700 font-medium text-base xl:text-lg">

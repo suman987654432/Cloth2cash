@@ -8,11 +8,13 @@ import HowWorks from "./pages/HowWorks";
 import ContactPage from "./pages/ContactPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <>
     <BrowserRouter>
+    <ScrollToTop />
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<LandingPage />} />
