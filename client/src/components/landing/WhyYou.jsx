@@ -4,7 +4,7 @@ import reward from "../../assets/reward.png";
 import tree from "../../assets/tree.png";
 import weight from "../../assets/weighing-machine.png";
 import waste from "../../assets/zero-waste.png";
-import FeatureCard from '../ui/Ccard';
+import FeatureCard from '../ui/Card';
 import SectionHeader from '../../components/ui/SectionHeader';
 
 const features = [

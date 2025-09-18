@@ -58,17 +58,17 @@ const ContactPage = () => {
             <div className="bg-white/90 rounded-xl shadow-md border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📧</div>
               <div className="font-semibold text-gray-700 text-base sm:text-lg">Email</div>
-              <a href="mailto:support@cloth2cash.com" className="text-blue-500 hover:underline break-all text-sm sm:text-base">support@cloth2cash.com</a>
+              <a href="mailto:sumanqaj9876@gmail.com" className="text-blue-500 hover:underline break-all text-sm sm:text-base">sumanqaj9876@gmail.com</a>
             </div>
             <div className="bg-white/90 rounded-xl shadow-md border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📞</div>
               <div className="font-semibold text-gray-700 text-base sm:text-lg">Phone</div>
-              <a href="tel:+919999999999" className="text-blue-500 hover:underline text-sm sm:text-base">+91 99999 99999</a>
+              <a href="tel:+919999999999" className="text-blue-500 hover:underline text-sm sm:text-base">+91 6299974421</a>
             </div>
             <div className="bg-white/90 rounded-xl shadow-md border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📍</div>
               <div className="font-semibold text-gray-700 text-base sm:text-lg">Address</div>
-              <div className="text-gray-500 text-sm sm:text-base">Cloth2Cash HQ, New Delhi, India</div>
+              <div className="text-gray-500 text-sm sm:text-base">sage suncity phase 1 Bhopal 462022</div>
             </div>
           </div>
           {/* Contact Form - Right Side */}

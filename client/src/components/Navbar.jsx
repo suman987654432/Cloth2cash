@@ -1,10 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from "../assets/logo.png"; 
+import { CircleUserRound } from "lucide-react"; // <-- add this import
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const navigate = useNavigate(); // add this
 
   return (
     <nav className="bg-white/95 backdrop-blur-md shadow-[0_4px_12px_rgba(34,197,94,0.3)] border-b border-green-200 sticky top-0 z-50">
@@ -47,6 +49,12 @@ const Navbar = () => {
             >
               Login
             </Link>
+            <CircleUserRound
+              className="w-9 h-10 ml-2 text-green-700 hover:text-green-800  cursor-pointer"
+              // tabIndex={0}
+              aria-label="User"
+              onClick={() => navigate("/profile")}
+            />
           </div>
 
           {/* Tablet Navigation */}
@@ -73,6 +81,12 @@ const Navbar = () => {
             >
               Login
             </Link>
+            <CircleUserRound
+              className="w-8 h-10 ml-2 text-green-700 hover:text-green-800 cursor-pointer"
+              // tabIndex={0}
+              aria-label="User"
+              onClick={() => navigate("/profile")}
+            />
           </div>
 
           {/* Mobile Menu Button */}
@@ -123,7 +137,7 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
-            <div className="px-1 sm:px-2 pt-2 sm:pt-3 pb-3 sm:pb-4">
+            <div className="px-1 sm:px-2 pt-2 sm:pt-3 pb-3 sm:pb-4 flex items-center justify-center gap-2">
               <Link
                 to="/login"
                 onClick={() => setIsMenuOpen(false)}
@@ -131,6 +145,15 @@ const Navbar = () => {
               >
                 Login
               </Link>
+              <CircleUserRound
+                className="w-9 h-10 ml-2 text-green-700 cursor-pointer"
+                // tabIndex={0} 
+                aria-label="User"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate("/profile");
+                }}
+              />
             </div>
           </div>
         </div>
