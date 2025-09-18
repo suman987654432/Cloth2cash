@@ -10,17 +10,14 @@ const WhatsApp = () => {
   };
 
   return (
- <button
+    <button
       onClick={handleWhatsAppClick}
       title="Chat with us on WhatsApp"
       aria-label="Chat with us on WhatsApp"
-      className="fixed bottom-6 right-6 w-16 h-16 bg-green-600 hover:bg-green-700 text-white rounded-full flex items-center justify-center text-2xl shadow-md transition-all duration-300"
+      className="fixed bottom-6 right-6 w-16 h-16 bg-green-600 hover:bg-green-700 text-white rounded-full flex items-center justify-center text-2xl shadow-2xl transition-all duration-300 z-[9999] hover:scale-110 active:scale-95"
     >
       <FaWhatsapp />
     </button>
-
-
-
   );
 };
 
