@@ -11,7 +11,7 @@ const AboutPage = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/src/assets/oldclothes.png')`,
+            backgroundImage: `url('/assets/oldclothes.png')`,
             filter: 'blur(3px)',
             transform: 'scale(1.1)'
           }}
