@@ -15,22 +15,21 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    minlength: 6
+    required: true
   },
   phone: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   },
   address: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   }
 }, {
   timestamps: true
 });
+
+module.exports = mongoose.model('User', userSchema);
 
 const User = mongoose.model('User', userSchema);
 

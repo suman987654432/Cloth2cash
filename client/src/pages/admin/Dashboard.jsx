@@ -1,6 +1,8 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { LayoutDashboard, Users, Package, BarChart3, LogOut, Menu } from "lucide-react"
+import UserPage from "./UserPage"
+import AllPickup from "./AllPickup"
 
 const sidebarOptions = [
   { label: "Dashboard", key: "dashboard", icon: LayoutDashboard },
@@ -14,6 +16,37 @@ const Dashboard = () => {
   const navigate = useNavigate()
   const [active, setActive] = React.useState("dashboard")
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
+  const [userCount, setUserCount] = React.useState(null)
+  const [pickupCount, setPickupCount] = React.useState(null) // add this line
+
+  React.useEffect(() => {
+    const fetchUserCount = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/users')
+        const data = await response.json()
+        const users = Array.isArray(data) ? data : data.users || []
+        setUserCount(users.length)
+      // eslint-disable-next-line no-unused-vars
+      } catch (error) {
+        setUserCount(null)
+      }
+    }
+    fetchUserCount()
+  }, [])
+
+  React.useEffect(() => {
+    const fetchPickupCount = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/schedule')
+        const data = await response.json()
+        setPickupCount(Array.isArray(data) ? data.length : 0)
+      // eslint-disable-next-line no-unused-vars
+      } catch (error) {
+        setPickupCount(null)
+      }
+    }
+    fetchPickupCount()
+  }, [])
 
   const handleSidebarClick = (key) => {
     if (key === "logout") {
@@ -53,9 +86,9 @@ const Dashboard = () => {
           </div>
         )
       case "users":
-        return <h2 className="text-green-700 font-bold text-2xl">Users Management (Coming Soon)</h2>
+        return <UserPage />
       case "orders":
-        return <h2 className="text-blue-700 font-bold text-2xl">All Pickup Orders (Coming Soon)</h2>
+        return <AllPickup />
       case "data":
         return <h2 className="text-purple-700 font-bold text-2xl">Overall Data (Coming Soon)</h2>
       default:
@@ -96,6 +129,48 @@ const Dashboard = () => {
             >
               <opt.icon className="w-5 h-5" />
               {opt.label}
+              {/* Show user count badge for Users option */}
+              {opt.key === "users" && userCount !== null && (
+                <span
+                  style={{
+                    background: "#22c55e",
+                    color: "#fff",
+                    borderRadius: "999px",
+                    fontSize: "12px",
+                    minWidth: "22px",
+                    height: "22px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginLeft: "auto",
+                    fontWeight: 600,
+                    padding: "0 7px"
+                  }}
+                >
+                  {userCount}
+                </span>
+              )}
+              {/* Show pickup count badge for All Pickup Orders option */}
+              {opt.key === "orders" && pickupCount !== null && (
+                <span
+                  style={{
+                    background: "#22c55e",
+                    color: "#fff",
+                    borderRadius: "999px",
+                    fontSize: "12px",
+                    minWidth: "22px",
+                    height: "22px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginLeft: "auto",
+                    fontWeight: 600,
+                    padding: "0 7px"
+                  }}
+                >
+                  {pickupCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -130,7 +205,7 @@ const Dashboard = () => {
 
         {/* Page Content */}
         <main className="flex-1 p-4 md:p-8 bg-gray-50">
-          <div className="bg-white rounded-xl shadow-md p-4 md:p-8 overflow-x-auto">{renderContent()}</div>
+          <div className=" p-4 md:p-8 overflow-x-auto">{renderContent()}</div>
         </main>
       </div>
     </div>

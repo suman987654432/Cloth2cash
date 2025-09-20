@@ -41,10 +41,24 @@ const SchedulePage = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Schedule data:', formData);
-        setCurrentStep(4);
+        try {
+            const response = await fetch('http://localhost:5000/api/schedule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok) {
+                setCurrentStep(4);
+            } else {
+                // Optionally handle error
+                alert('Failed to schedule pickup');
+            }
+        // eslint-disable-next-line no-unused-vars
+        } catch (err) {
+            alert('Server error');
+        }
     };
 
     const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4));
