@@ -12,6 +12,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import ProfilePage from "./pages/user/ProfilePage";
 import Dashboard from "./pages/admin/Dashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Protects admin dashboard route
 const RequireAdminAuth = ({ children }) => {
@@ -51,6 +53,7 @@ const App = () => {
         />
       </Routes>
       {!isAdminRoute && <WhatsApp />}
+      <ToastContainer />
     </>
   );
 };

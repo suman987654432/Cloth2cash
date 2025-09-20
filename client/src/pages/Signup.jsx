@@ -1,18 +1,55 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { showSuccessToast, showErrorToast } from '../utils/toast'
+// Make sure ToastContainer is rendered in your App.jsx or index.jsx
+// import { ToastContainer } from 'react-toastify';
+// <ToastContainer /> should be present in your main component
 
 const Signup = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '', address: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', address: '', phone: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle signup logic here
-    alert('Signup submitted!');
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:5000/api/users/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        showSuccessToast('Signup successful! Redirecting to profile...');
+        
+        setTimeout(() => {
+          window.location.href = '/profile';
+        }, 2000);
+      } else {
+        showErrorToast(data.message || 'Signup failed');
+        setError(data.message || 'Signup failed');
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      showErrorToast('Network error. Please try again.');
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,6 +75,13 @@ const Signup = () => {
           <h2 className="text-3xl font-bold text-gray-800 mb-1">Sign Up</h2>
           <p className="text-gray-700 text-base">Create your account to get started.</p>
         </div>
+        
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
+            {error}
+          </div>
+        )}
+
         <input
           type="text"
           name="name"
@@ -67,6 +111,15 @@ const Signup = () => {
         />
         <input
           type="text"
+          name="phone"
+          value={form.phone}
+          onChange={handleChange}
+          required
+          placeholder="Phone Number"
+          className="px-4 py-3 rounded-xl bg-white/80 border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none text-gray-800 placeholder-gray-400 text-lg shadow-sm transition-all"
+        />
+        <input
+          type="text"
           name="address"
           value={form.address}
           onChange={handleChange}
@@ -76,9 +129,10 @@ const Signup = () => {
         />
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold py-3 rounded-xl shadow-lg hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all text-lg mt-2 hover:scale-105 active:scale-95"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold py-3 rounded-xl shadow-lg hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all text-lg mt-2 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Sign Up
+          {loading ? 'Signing Up...' : 'Sign Up'}
         </button>
         <div className="text-center mt-3">
           <span className="text-gray-600">Already have an account?</span>{' '}

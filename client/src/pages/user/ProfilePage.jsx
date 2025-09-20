@@ -1,22 +1,41 @@
-import React, { useState } from 'react';
-import { User, MapPin, Phone, Mail, Calendar, Truck, Package, Award, Coins, Clock, CheckCircle, AlertCircle, Edit } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { User, MapPin, Phone, Mail, Calendar, Truck, Package, Award, Coins, Clock, CheckCircle, AlertCircle, Edit, LogOut } from 'lucide-react';
 
 const ProfilePage = () => {
     const [activeTab, setActiveTab] = useState('orders');
+    const [userData, setUserData] = useState(null);
+    const navigate = useNavigate();
 
-    // Dummy user data (can be replaced with API data later)
-    const userData = {
-        id: 'UC001',
-        name: 'Rahul Kumar',
-        email: 'rahul.kumar@example.com',
-        phone: '+91 98765 43210',
-        address: 'B-123, Green Park Extension, New Delhi - 110016',
-        profileImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format',
-        joinDate: '2024-01-15',
-        totalEarnings: 1240,
-        totalOrders: 18,
-        rewardPoints: 150,
-        membershipLevel: 'Gold'
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        
+        if (!token || !user) {
+            navigate('/login');
+            return;
+        }
+
+        const parsedUser = JSON.parse(user);
+        setUserData({
+            id: parsedUser.id || 'UC001',
+            name: parsedUser.name || 'User',
+            email: parsedUser.email || 'user@example.com',
+            phone: parsedUser.phone || '+91 00000 00000',
+            address: parsedUser.address || 'Address not provided',
+            profileImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face&auto=format',
+            joinDate: parsedUser.createdAt || '2024-01-15',
+            totalEarnings: parsedUser.totalEarnings || 0,
+            totalOrders: parsedUser.totalOrders || 0,
+            rewardPoints: parsedUser.rewardPoints || 0,
+            membershipLevel: parsedUser.membershipLevel || 'Silver'
+        });
+    }, [navigate]);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/');
     };
 
     // Dummy orders data
@@ -107,6 +126,17 @@ const ProfilePage = () => {
         }
     };
 
+    if (!userData) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading profile...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 py-4 sm:py-6 lg:py-8">
             <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
@@ -140,6 +170,16 @@ const ProfilePage = () => {
                                         <MapPin className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                                         <span className="text-center lg:text-left">{userData.address}</span>
                                     </div>
+                                </div>
+                                {/* Logout Button */}
+                                <div className="mt-4 flex justify-center lg:justify-start">
+                                    <button
+                                        onClick={handleLogout}
+                                        className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-200 text-sm sm:text-base font-medium"
+                                    >
+                                        <LogOut className="w-4 h-4" />
+                                        Logout
+                                    </button>
                                 </div>
                             </div>
                         </div>

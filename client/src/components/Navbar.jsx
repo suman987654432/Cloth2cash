@@ -1,19 +1,31 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from "../assets/logo.png"; 
-import { CircleUserRound } from "lucide-react"; // <-- add this import
+import { CircleUserRound, LogOut } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const navigate = useNavigate(); // add this
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsLoggedIn(false);
+    navigate('/');
+  };
 
   return (
     <nav className="bg-white/95 backdrop-blur-md shadow-[0_4px_12px_rgba(34,197,94,0.3)] border-b border-green-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-18 md:h-20">
           
-         
           <Link to="/" className="flex items-center group">
             <img 
               src={logo} 
@@ -26,8 +38,8 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex space-x-4 xl:space-x-8 text-gray-700 font-medium text-base xl:text-lg">
-            {[
+          <div className="hidden lg:flex space-x-4 xl:space-x-8 text-gray-700 font-medium text-base xl:text-lg items-center">
+            { [
               { to: "/", label: "Home" },
               { to: "/schedule", label: "Schedule Pickup" },
               { to: "/how-it-works", label: "How It Works" },
@@ -43,22 +55,35 @@ const Navbar = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
             ))}
-            <Link
-              to="/login"
-              className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-3 xl:px-4 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg text-sm xl:text-base"
-            >
-              Login
-            </Link>
-            <CircleUserRound
-              className="w-9 h-10 ml-2 text-green-700 hover:text-green-800  cursor-pointer"
-              // tabIndex={0}
-              aria-label="User"
-              onClick={() => navigate("/profile")}
-            />
+            
+            {!isLoggedIn ? (
+              <Link
+                to="/login"
+                className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-3 xl:px-4 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg text-sm xl:text-base"
+              >
+                Login
+              </Link>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link to="/profile">
+                  <CircleUserRound
+                    className="w-9 h-10 text-green-700 hover:text-green-800 cursor-pointer transition-colors duration-200"
+                    aria-label="Profile"
+                  />
+                </Link>
+                {/* <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 text-red-600 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-all duration-200"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </button> */}
+              </div>
+            )}
           </div>
 
           {/* Tablet Navigation */}
-          <div className="hidden md:flex lg:hidden space-x-3 text-gray-700 font-medium text-sm">
+          <div className="hidden md:flex lg:hidden space-x-3 text-gray-700 font-medium text-sm items-center">
             {[
               { to: "/", label: "Home" },
               { to: "/schedule", label: "Pickup" },
@@ -75,18 +100,31 @@ const Navbar = () => {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-green-600 group-hover:w-full transition-all duration-300"></span>
               </Link>
             ))}
-            <Link
-              to="/login"
-              className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-3 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg text-xs"
-            >
-              Login
-            </Link>
-            <CircleUserRound
-              className="w-8 h-10 ml-2 text-green-700 hover:text-green-800 cursor-pointer"
-              // tabIndex={0}
-              aria-label="User"
-              onClick={() => navigate("/profile")}
-            />
+            
+            {!isLoggedIn ? (
+              <Link
+                to="/login"
+                className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-3 py-2 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg text-xs"
+              >
+                Login
+              </Link>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link to="/profile">
+                  <CircleUserRound
+                    className="w-8 h-10 text-green-700 hover:text-green-800 cursor-pointer transition-colors duration-200"
+                    aria-label="Profile"
+                  />
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-1 text-red-600 hover:text-red-700 px-2 py-2 rounded-lg hover:bg-red-50 transition-all duration-200 text-xs"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -121,7 +159,7 @@ const Navbar = () => {
           } overflow-hidden`}
         >
           <div className="px-2 sm:px-3 pt-3 sm:pt-4 space-y-1 bg-white shadow-2xl rounded-xl sm:rounded-2xl mt-3 sm:mt-4 mx-1 border border-green-200">
-            {[
+            { [
               { to: "/", label: "Home" },
               { to: "/schedule", label: "Schedule Pickup" },
               { to: "/how-it-works", label: "How It Works" },
@@ -137,23 +175,39 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
+            
             <div className="px-1 sm:px-2 pt-2 sm:pt-3 pb-3 sm:pb-4 flex items-center justify-center gap-2">
-              <Link
-                to="/login"
-                onClick={() => setIsMenuOpen(false)}
-                className="block text-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg font-semibold text-base sm:text-lg"
-              >
-                Login
-              </Link>
-              <CircleUserRound
-                className="w-9 h-10 ml-2 text-green-700 cursor-pointer"
-                // tabIndex={0} 
-                aria-label="User"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  navigate("/profile");
-                }}
-              />
+              {!isLoggedIn ? (
+                <Link
+                  to="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block text-center bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg font-semibold text-base sm:text-lg"
+                >
+                  Login
+                </Link>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <CircleUserRound
+                      className="w-9 h-10 text-green-700 hover:text-green-800 cursor-pointer transition-colors duration-200"
+                      aria-label="Profile"
+                    />
+                  </Link>
+                  {/* <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="flex items-center gap-2 text-red-600 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-all duration-200"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button> */}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -163,3 +217,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+               

@@ -1,6 +1,6 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
-import { LayoutDashboard, Users, Package, BarChart3, LogOut } from "lucide-react"
+import { LayoutDashboard, Users, Package, BarChart3, LogOut, Menu } from "lucide-react"
 
 const sidebarOptions = [
   { label: "Dashboard", key: "dashboard", icon: LayoutDashboard },
@@ -13,6 +13,7 @@ const sidebarOptions = [
 const Dashboard = () => {
   const navigate = useNavigate()
   const [active, setActive] = React.useState("dashboard")
+  const [sidebarOpen, setSidebarOpen] = React.useState(false)
 
   const handleSidebarClick = (key) => {
     if (key === "logout") {
@@ -20,6 +21,7 @@ const Dashboard = () => {
       navigate("/admin-login")
     } else {
       setActive(key)
+      setSidebarOpen(false) // close sidebar on mobile after click
     }
   }
 
@@ -63,8 +65,21 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col relative">
+      {/* Sidebar for desktop, overlay for mobile */}
+      {/* Mobile sidebar overlay */}
+      <div
+        className={`fixed inset-0 z-40 bg-black bg-opacity-30 transition-opacity md:hidden ${sidebarOpen ? "block" : "hidden"}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      <aside
+        className={`
+          fixed z-50 inset-y-0 left-0 w-64 bg-white border-r border-gray-200 flex flex-col
+          transition-transform duration-200
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:static md:flex
+        `}
+        style={{ minHeight: "100vh" }}
+      >
         <div className="font-bold text-xl py-6 text-center text-green-700">
           Cloth2Cash
         </div>
@@ -88,14 +103,22 @@ const Dashboard = () => {
           © {new Date().getFullYear()} Cloth2Cash
         </div>
         {/* Bottom border aligned with topbar */}
-        <div className="absolute left-0 right-0 bottom-[calc(100%-4rem)] h-px bg-gray-200" style={{zIndex: 10}} />
+        <div className="absolute left-0 right-0 bottom-[calc(100%-4rem)] h-px bg-gray-200 md:block hidden" style={{zIndex: 10}} />
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-6 justify-between">
-          <h1 className="text-lg font-semibold text-gray-800">
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-4 md:px-6 justify-between relative z-10">
+          {/* Sidebar toggle button for mobile */}
+          <button
+            className="md:hidden mr-2 p-2 rounded hover:bg-gray-100"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label="Open sidebar"
+          >
+            <Menu className="w-6 h-6 text-green-700" />
+          </button>
+          <h1 className="text-lg font-semibold text-gray-800 truncate">
             {sidebarOptions.find((opt) => opt.key === active)?.label}
           </h1>
           <div className="flex items-center gap-3">
@@ -106,8 +129,8 @@ const Dashboard = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-8 bg-gray-50">
-          <div className="bg-white rounded-xl shadow-md p-8">{renderContent()}</div>
+        <main className="flex-1 p-4 md:p-8 bg-gray-50">
+          <div className="bg-white rounded-xl shadow-md p-4 md:p-8 overflow-x-auto">{renderContent()}</div>
         </main>
       </div>
     </div>

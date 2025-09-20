@@ -1,18 +1,54 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { showSuccessToast, showErrorToast } from '../utils/toast'
+// Make sure ToastContainer is rendered in your App.jsx or index.jsx
+// import { ToastContainer } from 'react-toastify';
+// <ToastContainer /> should be present in your main component
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    alert('Login submitted!');
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('http://localhost:5000/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        showSuccessToast('Login successful');
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } else {
+        showErrorToast(data.message || 'Login failed');
+        setError(data.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      showErrorToast('Network error. Please try again.');
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,6 +74,13 @@ const Login = () => {
           <h2 className="text-3xl font-bold text-gray-800 mb-1">Login</h2>
           <p className="text-gray-700 text-base">Welcome back! Please login to your account.</p>
         </div>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
+            {error}
+          </div>
+        )}
+
         <input
           type="email"
           name="email"
@@ -58,9 +101,10 @@ const Login = () => {
         />
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold py-3 rounded-xl shadow-lg hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all text-lg mt-2 hover:scale-105 active:scale-95"
+          disabled={loading}
+          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold py-3 rounded-xl shadow-lg hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transition-all text-lg mt-2 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Login
+          {loading ? 'Logging in...' : 'Login'}
         </button>
         <div className="text-center mt-3">
           <span className="text-gray-600">New user?</span>{' '}
