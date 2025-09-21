@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
 import PersonalInfo from '../components/schedule/PersonalInfo';
 import AddressInfo from '../components/schedule/AddressInfo';
@@ -6,6 +7,7 @@ import ScheduleDetails from '../components/schedule/ScheduleDetails';
 import SuccessMessage from '../components/schedule/SuccessMessage';
 import Hero from '../components/schedule/Hero';
 import SectionHeader from '../components/ui/SectionHeader';
+import { showErrorToast } from '../utils/toast';
 
 const SchedulePage = () => {
     const [formData, setFormData] = useState({
@@ -23,6 +25,7 @@ const SchedulePage = () => {
     });
 
     const [currentStep, setCurrentStep] = useState(1);
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -43,6 +46,12 @@ const SchedulePage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const user = localStorage.getItem('user');
+        if (!user) {
+            showErrorToast('You are not login');
+            navigate('/login');
+            return;
+        }
         try {
             const response = await fetch('http://localhost:5000/api/schedule', {
                 method: 'POST',
@@ -52,7 +61,6 @@ const SchedulePage = () => {
             if (response.ok) {
                 setCurrentStep(4);
             } else {
-                // Optionally handle error
                 alert('Failed to schedule pickup');
             }
         // eslint-disable-next-line no-unused-vars

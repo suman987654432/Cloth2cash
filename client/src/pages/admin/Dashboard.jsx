@@ -71,11 +71,15 @@ const Dashboard = () => {
             </p>
             <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
               <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-xl shadow p-6 text-center border border-green-200">
-                <div className="text-3xl font-bold text-green-700">--</div>
+                <div className="text-3xl font-bold text-green-700">
+                  {userCount !== null ? userCount : "--"}
+                </div>
                 <div className="text-gray-600 mt-2">Total Users</div>
               </div>
               <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl shadow p-6 text-center border border-blue-200">
-                <div className="text-3xl font-bold text-blue-700">--</div>
+                <div className="text-3xl font-bold text-blue-700">
+                  {pickupCount !== null ? pickupCount : "--"}
+                </div>
                 <div className="text-gray-600 mt-2">Pickup Orders</div>
               </div>
               <div className="bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl shadow p-6 text-center border border-purple-200">
@@ -97,7 +101,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex bg-gray-100 h-screen min-h-screen max-h-screen overflow-hidden">
       {/* Sidebar for desktop, overlay for mobile */}
       {/* Mobile sidebar overlay */}
       <div
@@ -111,12 +115,12 @@ const Dashboard = () => {
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0 md:static md:flex
         `}
-        style={{ minHeight: "100vh" }}
+        style={{ minHeight: "100vh", height: "100vh", maxHeight: "100vh" }}
       >
         <div className="font-bold text-xl py-6 text-center text-green-700">
           Cloth2Cash
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {sidebarOptions.map((opt) => (
             <button
               key={opt.key}
@@ -182,9 +186,9 @@ const Dashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen max-h-screen">
         {/* Topbar */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-4 md:px-6 justify-between relative z-10">
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-4 md:px-6 justify-between relative z-10 flex-shrink-0">
           {/* Sidebar toggle button for mobile */}
           <button
             className="md:hidden mr-2 p-2 rounded hover:bg-gray-100"
@@ -204,8 +208,8 @@ const Dashboard = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 md:p-8 bg-gray-50">
-          <div className=" p-4 md:p-8 overflow-x-auto">{renderContent()}</div>
+        <main className="flex-1 p-4 md:p-8 bg-gray-50 overflow-y-auto">
+          <div className="p-4 md:p-8 overflow-x-auto">{renderContent()}</div>
         </main>
       </div>
     </div>
