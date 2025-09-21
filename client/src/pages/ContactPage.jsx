@@ -37,15 +37,39 @@ const ContactHero = () => (
 const ContactPage = () => {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    // Here you can add your API call or email logic
+    setLoading(true);
+    
+    try {
+      const response = await fetch('https://cloth2cash.onrender.com/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitted(true);
+        setForm({ name: '', email: '', message: '' });
+      } else {
+        alert('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -132,9 +156,11 @@ const ContactPage = () => {
 
             <button
               type="submit"
-              disabled={submitted}
+              disabled={submitted || loading}
               className={`w-full relative overflow-hidden font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-xl shadow-2xl transition-all duration-300 text-base sm:text-lg tracking-wide ${submitted
                   ? 'bg-green-500 text-white cursor-not-allowed'
+                  : loading
+                  ? 'bg-gray-500 text-white cursor-not-allowed'
                   : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white hover:scale-105 hover:shadow-blue-500/30 active:scale-95'
                 }`}
             >
@@ -143,6 +169,11 @@ const ContactPage = () => {
                   <>
                     <span className="mr-2">✅</span>
                     <span className="text-sm sm:text-base">Thank You! We'll be in touch soon.</span>
+                  </>
+                ) : loading ? (
+                  <>
+                    <span className="mr-2">⏳</span>
+                    <span className="text-sm sm:text-base">Sending...</span>
                   </>
                 ) : (
                   <>
