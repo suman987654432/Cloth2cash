@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { showSuccessToast, showErrorToast } from '../utils/toast'
 
 const ContactHero = () => (
   <div className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden mb-12">
@@ -46,7 +47,7 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       const response = await fetch('https://cloth2cash.onrender.com/api/contact', {
         method: 'POST',
@@ -61,12 +62,13 @@ const ContactPage = () => {
       if (data.success) {
         setSubmitted(true);
         setForm({ name: '', email: '', message: '' });
+        showSuccessToast("Thank you! We'll be in touch soon.");
       } else {
-        alert('Failed to send message. Please try again.');
+        showErrorToast('Failed to send message. Please try again.');
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      alert('Failed to send message. Please try again.');
+      showErrorToast('Failed to send message. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -172,7 +174,11 @@ const ContactPage = () => {
                   </>
                 ) : loading ? (
                   <>
-                    <span className="mr-2">⏳</span>
+                    {/* Spinner */}
+                    <svg className="animate-spin mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
                     <span className="text-sm sm:text-base">Sending...</span>
                   </>
                 ) : (
