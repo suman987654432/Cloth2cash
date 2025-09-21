@@ -16,7 +16,7 @@ const UserPage = () => {
     const fetchUsers = async () => {
       try {
         setLoading(true)
-        const response = await axios.get('http://localhost:5000/api/users')
+        const response = await axios.get('https://cloth2cash.onrender.com/api/users')
         setUsers(response.data.users || response.data || [])
         setError(null)
       } catch (err) {

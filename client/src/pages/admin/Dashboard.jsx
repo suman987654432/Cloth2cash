@@ -22,7 +22,7 @@ const Dashboard = () => {
   React.useEffect(() => {
     const fetchUserCount = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/users')
+        const response = await fetch('https://cloth2cash.onrender.com/api/users')
         const data = await response.json()
         const users = Array.isArray(data) ? data : data.users || []
         setUserCount(users.length)
@@ -37,7 +37,7 @@ const Dashboard = () => {
   React.useEffect(() => {
     const fetchPickupCount = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/schedule')
+        const response = await fetch('https://cloth2cash.onrender.com/api/schedule')
         const data = await response.json()
         setPickupCount(Array.isArray(data) ? data.length : 0)
       // eslint-disable-next-line no-unused-vars

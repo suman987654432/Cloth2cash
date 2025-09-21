@@ -13,7 +13,7 @@ const AllPickup = () => {
   useEffect(() => {
     const fetchPickups = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/schedule');
+        const res = await fetch('https://cloth2cash.onrender.com/api/schedule');
         const data = await res.json();
         setPickups(Array.isArray(data) ? data : []);
       // eslint-disable-next-line no-unused-vars
