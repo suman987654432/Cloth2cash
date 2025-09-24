@@ -44,7 +44,7 @@ const testimonials = [
 ];
 
 const TestimonialCard = ({ testimonial }) => (
-	<div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 h-full min-h-[300px] flex flex-col justify-between">
+	<div className="bg-white rounded-2xl p-8  border border-gray-300 h-full min-h-[300px] flex flex-col justify-between">
 		<div>
 			<div className="flex items-start mb-6">
 				<FaQuoteLeft className="text-orange-400 text-3xl mr-4 mt-1" />

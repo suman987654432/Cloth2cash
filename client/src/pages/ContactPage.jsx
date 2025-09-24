@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { showSuccessToast, showErrorToast } from '../utils/toast'
 
 const ContactHero = () => (
   <div className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden mb-12">
@@ -44,61 +43,43 @@ const ContactPage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch('https://cloth2cash.onrender.com/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(form),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSubmitted(true);
-        setForm({ name: '', email: '', message: '' });
-        showSuccessToast("Thank you! We'll be in touch soon.");
-      } else {
-        showErrorToast('Failed to send message. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      showErrorToast('Failed to send message. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    // Construct WhatsApp message
+    const whatsappNumber = '6299974421';
+    const text = `Name: ${form.name}\nEmail: ${form.email}\nMessage: ${form.message}`;
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+    setForm({ name: '', email: '', message: '' });
+    setSubmitted(true);
+    setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 py-0">
       <ContactHero />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div id="contact-form" className="  p-4 sm:p-8 md:p-12 flex flex-col lg:flex-row gap-8 lg:gap-12 items-start lg:items-stretch">
+        <div id="contact-form" className="p-4 sm:p-8 md:p-12 flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch lg:items-stretch">
           {/* Contact Details - Left Side */}
-          <div className="w-full lg:w-1/2 flex flex-col gap-4 sm:gap-6 justify-center">
-            <div className="bg-white/90 rounded-xl shadow-md border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
+          <div className="w-full lg:w-1/2 flex flex-col gap-4 sm:gap-6 justify-center flex-1">
+            <div className="bg-white/90 rounded-xl shadow border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📧</div>
               <div className="font-semibold text-gray-700 text-base sm:text-lg">Email</div>
               <a href="mailto:sumanqaj9876@gmail.com" className="text-blue-500 hover:underline break-all text-sm sm:text-base">sumanqaj9876@gmail.com</a>
             </div>
-            <div className="bg-white/90 rounded-xl shadow-md border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
+            <div className="bg-white/90 rounded-xl shadow border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📞</div>
               <div className="font-semibold text-gray-700 text-base sm:text-lg">Phone</div>
               <a href="tel:+919999999999" className="text-blue-500 hover:underline text-sm sm:text-base">+91 6299974421</a>
             </div>
-            <div className="bg-white/90 rounded-xl shadow-md border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
+            <div className="bg-white/90 rounded-xl shadow border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📍</div>
               <div className="font-semibold text-gray-700 text-base sm:text-lg">Address</div>
               <div className="text-gray-500 text-sm sm:text-base">sage suncity phase 1 Bhopal 462022</div>
             </div>
           </div>
           {/* Contact Form - Right Side */}
-          <form onSubmit={handleSubmit} className="w-full lg:w-1/2 max-w-2xl space-y-4 sm:space-y-6 bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-8 md:p-12 border border-white/60 relative overflow-hidden">
+          <form onSubmit={handleSubmit} className="w-full lg:w-1/2 max-w-2xl space-y-4 sm:space-y-6 bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50 backdrop-blur-xl rounded-3xl shadow-lg p-6 sm:p-8 md:p-12 border border-white/60 relative overflow-hidden flex-1 flex flex-col justify-between">
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full blur-2xl -translate-y-12 sm:-translate-y-16 translate-x-12 sm:translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-pink-200/30 to-yellow-200/30 rounded-full blur-2xl translate-y-10 sm:translate-y-12 -translate-x-10 sm:-translate-x-12"></div>
