@@ -59,7 +59,7 @@ const UserPage = () => {
   if (error) return <div className="text-center py-8 text-red-500">Error: {error}</div>
 
   return (
-    <div className="max-w-7xl mx-auto px-2 sm:px-4 min-h-screen py-8">
+    <div className="max-w-7xl mx-auto px-2 sm:px-4 ">
       <h2 className="text-2xl font-bold mb-8 text-green-700 text-center tracking-tight">User Management</h2>
       {/* Filter Section */}
       <div className="flex flex-wrap justify-center items-center gap-4 mb-8 bg-white p-6 rounded-xl shadow border border-gray-200">

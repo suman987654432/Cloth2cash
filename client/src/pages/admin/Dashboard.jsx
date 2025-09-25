@@ -167,7 +167,7 @@ const Dashboard = () => {
          
             
             {/* Stats Cards */}
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-4 mb-5">
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-4 p-6">
               <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-xl shadow p-6 text-center border border-green-200">
                 <div className="text-3xl font-bold text-green-700">
                   {userCount !== null ? userCount : "--"}
@@ -196,36 +196,47 @@ const Dashboard = () => {
 
          
 
-            {/* Combined Chart */}
-            <div className="bg-white rounded-xl shadow p-6 border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Users vs Orders Trend</h3>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  {/* <YAxis />  // <-- Remove or comment out this line to hide the Y-axis */}
-                  <Tooltip />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="users" 
-                    stroke="#22c55e" 
-                    strokeWidth={3}
-                    dot={{ fill: '#22c55e', strokeWidth: 2, r: 5 }}
-                    name="New Users"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="orders" 
-                    stroke="#3b82f6" 
-                    strokeWidth={3}
-                    dot={{ fill: '#3b82f6', strokeWidth: 2, r: 5 }}
-                    name="Orders"
-                  />
-                  {/* Optionally, add a Bar for orders to highlight spikes */}
-                  {/* <Bar dataKey="orders" fill="#3b82f6" opacity={0.2} /> */}
-                </LineChart>
-              </ResponsiveContainer>
+            {/* Separate Charts for Users and Orders */}
+            <div className="grid gap-6 grid-cols-1 xl:grid-cols-2 mb-6 p-6">
+              {/* Users Chart */}
+              <div className="bg-white rounded-xl shadow p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Users Trend</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <Tooltip />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="users" 
+                      stroke="#22c55e" 
+                      strokeWidth={3}
+                      dot={{ fill: '#22c55e', strokeWidth: 2, r: 5 }}
+                      name="New Users"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Orders Chart */}
+              <div className="bg-white rounded-xl shadow p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Orders Trend</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <Tooltip />
+                    <Legend />
+                    <Bar 
+                      dataKey="orders" 
+                      fill="#3b82f6" 
+                      radius={[4, 4, 0, 0]}
+                      name="Orders"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
         )
@@ -241,7 +252,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex bg-gray-100 h-screen min-h-screen max-h-screen overflow-hidden">
+    <div className="flex bg-gray-100 h-screen min-h-screen max-h-screen overflow-hidden ">
       {/* Sidebar for desktop, overlay for mobile */}
       {/* Mobile sidebar overlay */}
       <div
@@ -326,7 +337,7 @@ const Dashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen max-h-screen">
+      <div className="flex-1 flex flex-col min-w-0 h-screen max-h-screen ">
         {/* Topbar */}
         <header className="h-16 bg-white border-b border-gray-200 flex items-center px-4 md:px-6 justify-between relative z-10 flex-shrink-0">
           {/* Sidebar toggle button for mobile */}
@@ -348,7 +359,7 @@ const Dashboard = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 bg-gray-50 overflow-y-auto">
+        <main className="flex-1 bg-gray-50 overflow-y-auto ">
           <div className=" overflow-x-auto">{renderContent()}</div>
         </main>
       </div>
