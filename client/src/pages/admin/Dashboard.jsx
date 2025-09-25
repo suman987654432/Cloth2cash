@@ -1,6 +1,7 @@
 import React from "react"
 import { useNavigate } from "react-router-dom"
 import { LayoutDashboard, Users, Package, BarChart3, LogOut, Menu } from "lucide-react"
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
 import UserPage from "./UserPage"
 import AllPickup from "./AllPickup"
 
@@ -8,7 +9,7 @@ const sidebarOptions = [
   { label: "Dashboard", key: "dashboard", icon: LayoutDashboard },
   { label: "Users", key: "users", icon: Users },
   { label: "All Pickup Orders", key: "orders", icon: Package },
-  { label: "Overall Data", key: "data", icon: BarChart3 },
+
   { label: "Logout", key: "logout", icon: LogOut },
 ]
 
@@ -17,7 +18,10 @@ const Dashboard = () => {
   const [active, setActive] = React.useState("dashboard")
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
   const [userCount, setUserCount] = React.useState(null)
-  const [pickupCount, setPickupCount] = React.useState(null) // add this line
+  const [pickupCount, setPickupCount] = React.useState(null)
+  const [totalWeight, setTotalWeight] = React.useState(null)
+  const [chartData, setChartData] = React.useState([])
+
 
   React.useEffect(() => {
     const fetchUserCount = async () => {
@@ -48,6 +52,103 @@ const Dashboard = () => {
     fetchPickupCount()
   }, [])
 
+  React.useEffect(() => {
+    const fetchTotalWeight = async () => {
+      try {
+        const response = await fetch('https://cloth2cash.onrender.com/api/schedule')
+        const data = await response.json()
+        const schedules = Array.isArray(data) ? data : []
+        
+        console.log('Schedule data for weight:', schedules) // Debug log
+        console.log('Total schedules found:', schedules.length) // Debug log
+        
+        // Log the first few items to see structure
+        if (schedules.length > 0) {
+          console.log('First schedule item:', schedules[0])
+          console.log('Available fields:', Object.keys(schedules[0]))
+          
+          // Check if pickup object exists and log its structure
+          if (schedules[0].pickup) {
+            console.log('Pickup object:', schedules[0].pickup)
+            console.log('Pickup fields:', Object.keys(schedules[0].pickup))
+          }
+        }
+        
+        const total = schedules.reduce((sum, schedule) => {
+          // Try multiple possible locations for weight/quantity data
+          const weight = 
+            schedule.pickup?.estimatedQuantity || 
+            schedule.pickup?.quantity ||
+            schedule.pickup?.weight ||
+            schedule.estimatedQuantity ||
+            schedule.quantity ||
+            schedule.weight ||
+            schedule.clothWeight ||
+            schedule.totalWeight ||
+            0
+            
+          const numericWeight = parseFloat(weight) || 0
+          
+          console.log('Item:', schedule._id || schedule.id, 'Raw weight:', weight, 'Parsed:', numericWeight) // Debug log
+          
+          return sum + numericWeight
+        }, 0)
+        
+        console.log('Total calculated weight:', total) // Debug log
+        setTotalWeight(total > 0 ? total.toFixed(2) : '0.00')
+      } catch (error) {
+        console.error('Error fetching weight:', error)
+        setTotalWeight('0.00')
+      }
+    }
+    fetchTotalWeight()
+  }, [])
+
+  React.useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        // Fetch users data
+        const usersResponse = await fetch('https://cloth2cash.onrender.com/api/users')
+        const usersData = await usersResponse.json()
+        const users = Array.isArray(usersData) ? usersData : usersData.users || []
+
+        // Fetch orders data
+        const ordersResponse = await fetch('https://cloth2cash.onrender.com/api/schedule')
+        const ordersData = await ordersResponse.json()
+        const orders = Array.isArray(ordersData) ? ordersData : []
+
+        // Process data for last 7 days
+        const last7Days = []
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date()
+          date.setDate(date.getDate() - i)
+          const dateString = date.toISOString().split('T')[0]
+          
+          const usersOnDate = users.filter(user => {
+            const userDate = new Date(user.createdAt || user.date)
+            return userDate.toISOString().split('T')[0] === dateString
+          }).length
+
+          const ordersOnDate = orders.filter(order => {
+            const orderDate = new Date(order.createdAt || order.date || order.scheduledDate)
+            return orderDate.toISOString().split('T')[0] === dateString
+          }).length
+
+          last7Days.push({
+            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            users: usersOnDate,
+            orders: ordersOnDate
+          })
+        }
+
+        setChartData(last7Days)
+      } catch (error) {
+        console.error('Error fetching chart data:', error)
+      }
+    }
+    fetchChartData()
+  }, [])
+
   const handleSidebarClick = (key) => {
     if (key === "logout") {
       localStorage.removeItem("isAdmin")
@@ -63,13 +164,10 @@ const Dashboard = () => {
       case "dashboard":
         return (
           <div>
-            <h2 className="mb-2 text-gray-800 font-bold text-2xl">
-              Welcome to Cloth2Cash Admin Dashboard
-            </h2>
-            <p className="text-gray-500 mb-8">
-              Manage users, pickup orders, and view overall data insights for your platform.
-            </p>
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
+         
+            
+            {/* Stats Cards */}
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-4 mb-5">
               <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-xl shadow p-6 text-center border border-green-200">
                 <div className="text-3xl font-bold text-green-700">
                   {userCount !== null ? userCount : "--"}
@@ -82,10 +180,52 @@ const Dashboard = () => {
                 </div>
                 <div className="text-gray-600 mt-2">Pickup Orders</div>
               </div>
-              <div className="bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl shadow p-6 text-center border border-purple-200">
-                <div className="text-3xl font-bold text-purple-700">--</div>
-                <div className="text-gray-600 mt-2">Overall Data</div>
+              <div className="bg-gradient-to-br from-orange-100 to-orange-50 rounded-xl shadow p-6 text-center border border-orange-200">
+                <div className="text-3xl font-bold text-orange-700">
+                  {totalWeight !== null ? `${totalWeight} kg` : "--"}
+                </div>
+                <div className="text-gray-600 mt-2">Total Clothes Weight</div>
               </div>
+              <div className="bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl shadow p-6 text-center border border-purple-200">
+                <div className="text-3xl font-bold text-purple-700">
+                💭💭💭
+                </div>
+                <div className="text-gray-600 mt-2"> Comming soon 🤔</div>
+              </div>
+            </div>
+
+         
+
+            {/* Combined Chart */}
+            <div className="bg-white rounded-xl shadow p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Users vs Orders Trend</h3>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  {/* <YAxis />  // <-- Remove or comment out this line to hide the Y-axis */}
+                  <Tooltip />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="users" 
+                    stroke="#22c55e" 
+                    strokeWidth={3}
+                    dot={{ fill: '#22c55e', strokeWidth: 2, r: 5 }}
+                    name="New Users"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="orders" 
+                    stroke="#3b82f6" 
+                    strokeWidth={3}
+                    dot={{ fill: '#3b82f6', strokeWidth: 2, r: 5 }}
+                    name="Orders"
+                  />
+                  {/* Optionally, add a Bar for orders to highlight spikes */}
+                  {/* <Bar dataKey="orders" fill="#3b82f6" opacity={0.2} /> */}
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
         )
@@ -208,8 +348,8 @@ const Dashboard = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 md:p-8 bg-gray-50 overflow-y-auto">
-          <div className="p-4 md:p-8 overflow-x-auto">{renderContent()}</div>
+        <main className="flex-1 bg-gray-50 overflow-y-auto">
+          <div className=" overflow-x-auto">{renderContent()}</div>
         </main>
       </div>
     </div>

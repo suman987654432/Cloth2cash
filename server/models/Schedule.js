@@ -11,7 +11,12 @@ const scheduleSchema = new mongoose.Schema({
   timeSlot: { type: String, required: true },
   clothTypes: [{ type: String }],
   estimatedQuantity: { type: String },
-  specialInstructions: { type: String }
-}, { timestamps: true });
+  specialInstructions: { type: String },
+  status: { type: String, default: 'scheduled' }
+}, {
+  timestamps: true
+});
 
 module.exports = mongoose.model('Schedule', scheduleSchema);
+
+

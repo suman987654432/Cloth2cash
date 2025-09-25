@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./routes/user');
 const scheduleRoutes = require('./routes/schedule');
-const contactRoutes = require('./routes/contactRoutes');
+
 
 const app = express();
 const PORT = 5000;
@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI)
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/schedule', scheduleRoutes);
-app.use('/api/contact', contactRoutes);
+
 
 app.get('/', (req, res) => {
   res.json({ message: 'Cloth2Cash API is running!' });
@@ -33,9 +33,17 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+// No changes needed here if your scheduleRoutes handles status update and returns updated pickup.
+// Make sure your PUT/PATCH endpoint for updating status in routes/schedule.js looks like this:
+
+// Example in routes/schedule.js:
+// router.patch('/:id/status', async (req, res) => {
+//   const { status } = req.body;
+//   const updated = await Schedule.findByIdAndUpdate(req.params.id, { status }, { new: true });
+//   res.json(updated);
+// });
