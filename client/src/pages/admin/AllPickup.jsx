@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchPickups, updatePickupStatus } from '../../redux/pickupsSlice';
+import { fetchPickups, updatePickupStatus, deletePickup } from '../../redux/pickupsSlice';
 
 const PICKUPS_PER_PAGE = 5;
 
@@ -17,6 +17,8 @@ const AllPickup = () => {
     status: ''
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedPickup, setSelectedPickup] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if (!pickups || pickups.length === 0) {
@@ -36,6 +38,29 @@ const AllPickup = () => {
     } catch (error) {
       alert('Failed to update status: ' + error);
     }
+  };
+
+  const handleRowClick = (pickup) => {
+    setSelectedPickup(pickup);
+    setShowDeleteModal(true);
+  };
+
+  const handleDelete = async () => {
+    if (selectedPickup) {
+      try {
+        await dispatch(deletePickup(selectedPickup._id)).unwrap();
+        alert('Pickup deleted successfully');
+        setShowDeleteModal(false);
+        setSelectedPickup(null);
+      } catch (error) {
+        alert('Failed to delete pickup: ' + error);
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setShowDeleteModal(false);
+    setSelectedPickup(null);
   };
 
   const filteredPickups = pickups.filter(pickup =>
@@ -119,9 +144,11 @@ const AllPickup = () => {
               paginatedPickups.map((pickup, index) => (
                 <tr
                   key={pickup._id}
-                  className={`transition-colors duration-150 ${
+                  onClick={() => handleRowClick(pickup)}
+                  className={`transition-colors duration-150 cursor-pointer ${
                     index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                  } hover:bg-green-50`}
+                  } hover:bg-red-50 hover:shadow-md`}
+                  title="Click to delete this pickup"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div>
@@ -170,7 +197,11 @@ const AllPickup = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <select
                       value={pickup.status || 'scheduled'}
-                      onChange={(e) => handleStatusUpdate(pickup._id, e.target.value)}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleStatusUpdate(pickup._id, e.target.value);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
                       className={`border rounded-lg px-3 py-1 text-sm font-medium ${
                         pickup.status === 'completed' 
                           ? 'bg-green-100 text-green-800 border-green-300'
@@ -202,7 +233,9 @@ const AllPickup = () => {
           paginatedPickups.map((pickup) => (
             <div
               key={pickup._id}
-              className="bg-white rounded-xl shadow border border-gray-200 p-4 flex flex-col gap-2"
+              onClick={() => handleRowClick(pickup)}
+              className="bg-white rounded-xl shadow border border-gray-200 p-4 flex flex-col gap-2 cursor-pointer hover:bg-red-50 hover:shadow-md transition-colors"
+              title="Tap to delete this pickup"
             >
               <div className="flex justify-between items-center">
                 <div className="font-semibold text-green-700">{pickup.fullName || 'N/A'}</div>
@@ -229,7 +262,11 @@ const AllPickup = () => {
                 <span className="text-xs text-gray-500">Status:</span>
                 <select
                   value={pickup.status || 'scheduled'}
-                  onChange={(e) => handleStatusUpdate(pickup._id, e.target.value)}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    handleStatusUpdate(pickup._id, e.target.value);
+                  }}
+                  onClick={(e) => e.stopPropagation()}
                   className={`border rounded-lg px-3 py-1 text-xs font-medium ${
                     pickup.status === 'completed' 
                       ? 'bg-green-100 text-green-800 border-green-300'
@@ -253,6 +290,40 @@ const AllPickup = () => {
           ))
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md mx-4">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Delete Pickup Order</h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Are you sure you want to delete pickup order for <strong>{selectedPickup?.fullName}</strong>? 
+                This action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={closeModal}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pagination Controls */}
       {filteredPickups.length > PICKUPS_PER_PAGE && (

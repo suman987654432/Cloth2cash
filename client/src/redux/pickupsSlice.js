@@ -28,6 +28,46 @@ export const updatePickupStatus = createAsyncThunk(
   }
 );
 
+// Delete pickup async thunk
+export const deletePickup = createAsyncThunk(
+  'pickups/deletePickup',
+  async (pickupId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/pickups/${pickupId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        let errorMessage = 'Failed to delete pickup';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If response is not JSON, use status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        throw new Error(errorMessage);
+      }
+
+      // Handle different response types
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return pickupId;
+      } else {
+        // For 204 No Content or other successful responses without JSON
+        return pickupId;
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const pickupsSlice = createSlice({
   name: 'pickups',
   initialState: {
@@ -68,9 +108,22 @@ const pickupsSlice = createSlice({
       .addCase(updatePickupStatus.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      
+      // Delete pickup
+      .addCase(deletePickup.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePickup.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = state.data.filter(pickup => pickup._id !== action.payload);
+      })
+      .addCase(deletePickup.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
 export default pickupsSlice.reducer;
-       
