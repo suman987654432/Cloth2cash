@@ -1,6 +1,7 @@
 import React from 'react'
 import WhatWeDoAccordion from "../components/ui/Accordion"
 import SectionHeader from "../components/ui/SectionHeader"
+import oldclothesImg from '../assets/oldclothes.png'
 
 const AboutPage = () => {
   return (
@@ -11,7 +12,7 @@ const AboutPage = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: `url('/assets/oldclothes.png')`,
+            backgroundImage: `url(${oldclothesImg})`,
             filter: 'blur(3px)',
             transform: 'scale(1.1)'
           }}

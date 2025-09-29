@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import slide1 from "../../assets/slide1.png";
 import slide2 from "../../assets/slide2.png";
 import Button from '../ui/Button';
 
 const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showDots = true }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate();
 
   const defaultSlides = [
     {
@@ -57,6 +59,14 @@ const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showDots =
     setCurrentSlide(index);
   };
 
+  const handleGetStarted = () => {
+    navigate('/schedule');
+  };
+
+  const handleLearnMore = () => {
+    navigate('/about');
+  };
+
   return (
     <>
       <div className="relative w-full max-w-screen-7xl mx-auto bg-white rounded-xl lg:rounded-2xl overflow-hidden h-[90vh] lg:h-[92vh] min-h-[600px] lg:min-h-[400px] max-h-[900px] border border-gray-200">
@@ -105,6 +115,7 @@ const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showDots =
                       variant="primary"
                       size="lg"
                       className="w-full sm:w-auto text-base px-8 py-3 font-medium hover:scale-105 transition-transform duration-200 shadow-lg"
+                      onClick={handleGetStarted}
                     >
                       Get Started
                       <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,6 +126,7 @@ const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showDots =
                       variant="outline"
                       size="lg"
                       className="w-full sm:w-auto text-base px-8 py-3 font-medium hover:scale-105 transition-transform duration-200 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
+                      onClick={handleLearnMore}
                     >
                       Learn More
                     </Button>
