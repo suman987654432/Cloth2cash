@@ -1,5 +1,5 @@
 import React from 'react';
-
+import oldclothesImg from '../../assets/oldclothes.png';
 const HowWorksHero = () => {
   const scrollToSteps = () => {
     const stepsElement = document.getElementById('how-it-works-steps');
@@ -14,7 +14,7 @@ const HowWorksHero = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/src/assets/oldclothes.png')`,
+        backgroundImage: `url(${oldclothesImg})`,
           filter: 'blur(3px)',
           transform: 'scale(1.1)' // Prevents blur edges
         }}

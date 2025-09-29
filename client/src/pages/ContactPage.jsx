@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import oldclothesImg from '../assets/oldclothes.png'
 
 const ContactHero = () => (
   <div className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden mb-12">
@@ -6,7 +7,7 @@ const ContactHero = () => (
     <div
       className="absolute inset-0 bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: `url('/assets/oldclothes.png')`,
+        backgroundImage: `url(${oldclothesImg})`,
         filter: 'blur(3px)',
         transform: 'scale(1.1)'
       }}
