@@ -1,4 +1,3 @@
-
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
 import Section from './ui/Section';
 import SectionHeader from './ui/SectionHeader';
@@ -47,7 +46,7 @@ const TestimonialCard = ({ testimonial }) => (
 	<div className="bg-white rounded-2xl p-8  border border-gray-300 h-full min-h-[300px] flex flex-col justify-between">
 		<div>
 			<div className="flex items-start mb-6">
-				<FaQuoteLeft className="text-orange-400 text-3xl mr-4 mt-1" />
+				<FaQuoteLeft className="text-orange-400 text-2xl mr-4 mt-1 flex-shrink-0" />
 				<div className="flex items-center">
 					{[...Array(5)].map((_, i) => (
 						<FaStar
@@ -98,4 +97,5 @@ const Testimonnal = () => {
 };
 
 export default Testimonnal;
+
 		
