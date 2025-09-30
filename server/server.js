@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./routes/user');
 const scheduleRoutes = require('./routes/schedule');
+const feedbackRoutes = require('./routes/feedback');
 
 
 const app = express();
@@ -22,6 +23,7 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api/users', userRoutes);
 app.use('/api/schedule', scheduleRoutes);
 app.use('/api/pickups', scheduleRoutes); // Add this line for pickup endpoints
+app.use('/api/feedback', feedbackRoutes); // Add this line for feedback endpoints
 
 
 app.get('/', (req, res) => {

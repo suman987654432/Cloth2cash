@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5000', // Your backend server port
+        target: 'https://cloth2cash.onrender.com', // Your backend server port
         changeOrigin: true,
         secure: false,
       }
