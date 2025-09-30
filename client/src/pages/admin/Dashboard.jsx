@@ -11,7 +11,8 @@ const sidebarOptions = [
   { label: "All Pickup Orders", key: "orders", icon: Package },
   { label: "Feedback", key: "feedback", icon: MessageSquare },
   { label: "Logout", key: "logout", icon: LogOut },
-]
+ ]
+//:id/approve
 
 // Feedback Page Component
 const FeedbackPage = () => {
@@ -23,13 +24,23 @@ const FeedbackPage = () => {
     const fetchFeedbacks = async () => {
       try {
         setLoading(true)
+        setError(null)
+        
+        console.log('Fetching feedbacks from:', 'https://cloth2cash.onrender.com/api/feedback/all')
         const response = await fetch('https://cloth2cash.onrender.com/api/feedback/all')
+        
+        console.log('Response status:', response.status)
+        console.log('Response ok:', response.ok)
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         
         const data = await response.json()
+        console.log('Feedback data received:', data)
+        console.log('Data type:', typeof data)
+        console.log('Is array:', Array.isArray(data))
+        
         setFeedbacks(Array.isArray(data) ? data : [])
       } catch (error) {
         console.error('Error fetching feedbacks:', error)
@@ -42,30 +53,7 @@ const FeedbackPage = () => {
     fetchFeedbacks()
   }, [])
 
-  const handleApprovalToggle = async (feedbackId, currentStatus) => {
-    try {
-      const response = await fetch(`https://cloth2cash.onrender.com/api/feedback/${feedbackId}/approve`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ isApproved: !currentStatus })
-      })
 
-      if (response.ok) {
-        // Update local state
-        setFeedbacks(prev => prev.map(feedback => 
-          feedback._id === feedbackId 
-            ? { ...feedback, isApproved: !currentStatus }
-            : feedback
-        ))
-      } else {
-        console.error('Failed to update feedback approval status')
-      }
-    } catch (error) {
-      console.error('Error updating feedback:', error)
-    }
-  }
 
   const getInitials = (name) => {
     if (!name) return 'U'
@@ -154,17 +142,7 @@ const FeedbackPage = () => {
                       {feedback.rating}/5
                     </span>
                   </div>
-                  {/* Approval Toggle */}
-                  <button
-                    onClick={() => handleApprovalToggle(feedback._id, feedback.isApproved)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                      feedback.isApproved
-                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                        : 'bg-red-100 text-red-800 hover:bg-red-200'
-                    }`}
-                  >
-                    {feedback.isApproved ? 'Approved' : 'Pending'}
-                  </button>
+                 
                 </div>
               </div>
               
@@ -325,12 +303,22 @@ const Dashboard = () => {
   React.useEffect(() => {
     const fetchFeedbackCount = async () => {
       try {
+        console.log('Fetching feedback count from:', 'https://cloth2cash.onrender.com/api/feedback/all')
         const response = await fetch('https://cloth2cash.onrender.com/api/feedback/all')
+        
+        if (!response.ok) {
+          console.error('Feedback count fetch failed:', response.status)
+          setFeedbackCount(0)
+          return
+        }
+        
         const data = await response.json()
+        console.log('Feedback count data:', data)
+        
         setFeedbackCount(Array.isArray(data) ? data.length : 0)
       } catch (error) {
         console.error('Error fetching feedback count:', error)
-        setFeedbackCount(null)
+        setFeedbackCount(0)
       }
     }
     fetchFeedbackCount()
@@ -525,3 +513,4 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+         
