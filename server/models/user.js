@@ -13,19 +13,20 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         trim: true
     },
-    phone: {
+    password: {
         type: String,
         required: true,
+        minlength: 6
+    },
+    phone: {
+        type: String,
         trim: true
     },
     address: {
         type: String,
         trim: true
     },
-    password: {
-        type: String,
-        required: true
-    },
+  
     totalEarnings: {
         type: Number,
         default: 0
@@ -40,10 +41,12 @@ const userSchema = new mongoose.Schema({
     },
     membershipLevel: {
         type: String,
-        default: 'Silver'
+        default: 'Silver',
+        enum: ['Bronze', 'Silver', 'Gold', 'Platinum']
     }
 }, {
     timestamps: true // This adds createdAt and updatedAt automatically
 });
 
-module.exports = mongoose.model('User', userSchema);
+// Create the User model if it doesn't exist
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);

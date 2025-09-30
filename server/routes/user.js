@@ -107,48 +107,36 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+// Update user profile
 router.put('/:id', async (req, res) => {
     try {
-        const { name, email, phone, address } = req.body;
-        
-        // Find and update the user
+        const { id } = req.params;
+        const { name, email, phone, address, profileImage } = req.body;
+
+        // Build update object
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (email) updateData.email = email;
+        if (phone) updateData.phone = phone;
+        if (address) updateData.address = address;
+        if (profileImage !== undefined) updateData.profileImage = profileImage; // Allow empty string to remove image
+
         const updatedUser = await User.findByIdAndUpdate(
-            req.params.id,
-            {
-                name,
-                email,
-                phone,
-                address,
-                updatedAt: new Date()
-            },
-            { 
-                new: true, 
-                runValidators: true 
-            }
-        );
+            id,
+            updateData,
+            { new: true, runValidators: true }
+        ).select('-password');
 
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Don't send password back
-        const { password, ...userResponse } = updatedUser.toObject();
-        
-        res.json({
-            message: 'Profile updated successfully',
-            user: userResponse
-        });
+        res.json(updatedUser);
     } catch (error) {
-        console.error('Update user error:', error);
-        
-        // Handle duplicate email error
-        if (error.code === 11000) {
-            return res.status(400).json({ message: 'Email already exists' });
-        }
-        
-        res.status(500).json({ message: error.message });
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
 module.exports = router;
+   
