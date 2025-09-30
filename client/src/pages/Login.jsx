@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { showSuccessToast, showErrorToast } from '../utils/toast'
-// Make sure ToastContainer is rendered in your App.jsx or index.jsx
-// import { ToastContainer } from 'react-toastify';
-// <ToastContainer /> should be present in your main component
+import oldclothesImg from '../assets/oldclothes.png'
 
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -57,7 +55,7 @@ const Login = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/src/assets/oldclothes.png')`,
+          backgroundImage: `url(${oldclothesImg})`,
           filter: 'blur(4px)',
           zIndex: 0
         }}
