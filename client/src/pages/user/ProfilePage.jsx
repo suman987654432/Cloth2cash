@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, MapPin, Phone, Mail, Calendar, Truck, Package, Award, Coins, Clock, CheckCircle, AlertCircle, Edit, LogOut, RefreshCw, Tag, Info, List, Home, Hash } from 'lucide-react';
+import { User, MapPin, Phone, Mail, Calendar, Truck, Package, Award, Coins, Clock, CheckCircle, AlertCircle, Edit, LogOut, RefreshCw, Tag, Info, List, Home, Hash, X, Save } from 'lucide-react';
 
 const ProfilePage = () => {
     const [activeTab, setActiveTab] = useState('pickups');
@@ -8,6 +8,14 @@ const ProfilePage = () => {
     const [pickupOrders, setPickupOrders] = useState([]);
     const [loadingPickups, setLoadingPickups] = useState(false);
     const [pickupError, setPickupError] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editFormData, setEditFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        address: ''
+    });
+    const [isSaving, setIsSaving] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,7 +52,8 @@ const ProfilePage = () => {
             });
 
             // Fetch all pickup orders for the logged-in user
-            fetchPickupOrders(parsedUser.email, parsedUser.phone || parsedUser.phoneNumber);
+            // eslint-disable-next-line no-undef
+            fetchPickupOrders(parsedUser.email, parsedUser.phone || parsedParsedUser.phoneNumber);
         } catch (error) {
             console.error('Error parsing user data:', error);
             navigate('/login');
@@ -187,6 +196,78 @@ const ProfilePage = () => {
         }
     };
 
+    const handleEditClick = () => {
+        setEditFormData({
+            name: userData.name || '',
+            email: userData.email || '',
+            phone: userData.phone || '',
+            address: userData.address || ''
+        });
+        setShowEditModal(true);
+    };
+
+    // Handle form input change
+    const handleEditFormChange = (e) => {
+        const { name, value } = e.target;
+        setEditFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // Handle save profile
+    const handleSaveProfile = async () => {
+        try {
+            setIsSaving(true);
+            
+            // Make API call to update the user profile
+            const response = await fetch(`http://localhost:5000/api/users/${userData.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(editFormData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update profile');
+            }
+
+            const updatedUserFromAPI = await response.json();
+
+            // Update both localStorage and state with the response from API
+            const updatedUser = {
+                ...userData,
+                ...editFormData,
+                ...updatedUserFromAPI // Use data returned from API
+            };
+
+            setUserData(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            
+            setShowEditModal(false);
+            alert('Profile updated successfully!');
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            alert('Failed to update profile: ' + (error.message || error));
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    // Close modal
+    const closeEditModal = () => {
+        setShowEditModal(false);
+        setEditFormData({
+            name: '',
+            email: '',
+            phone: '',
+            address: ''
+        });
+    };
+
     if (!userData) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
@@ -207,29 +288,34 @@ const ProfilePage = () => {
                         <div className="flex flex-col lg:flex-row items-center gap-4 sm:gap-6 lg:gap-8">
                             <div className="relative">
                                 <img
-                                    src={userData.profileImage}
+                                    src={userData?.profileImage}
                                     alt="Profile"
                                     className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full border-2 sm:border-4 border-white shadow-lg"
                                 />
-                                <div className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 bg-green-400 rounded-full p-1.5 sm:p-2 cursor-pointer hover:bg-yellow-300 transition-colors duration-200">
+                                <div 
+                                    className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 bg-green-400 rounded-full p-1.5 sm:p-2 cursor-pointer hover:bg-yellow-300 transition-colors duration-200"
+                                    onClick={handleEditClick}
+                                    title="Edit Profile"
+                                >
                                     <Edit className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-green-800" />
                                 </div>
                             </div>
+                            
                             <div className="text-center lg:text-left flex-1">
-                                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">{userData.name}</h1>
-                                <p className="text-green-100 text-sm sm:text-base lg:text-lg mb-3 sm:mb-4">{userData.membershipLevel} Member</p>
+                                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">{userData?.name}</h1>
+                                <p className="text-green-100 text-sm sm:text-base lg:text-lg mb-3 sm:mb-4">{userData?.membershipLevel} Member</p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 lg:gap-4 text-green-100 text-xs sm:text-sm lg:text-base">
                                     <div className="flex items-center justify-center lg:justify-start gap-2">
                                         <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
-                                        <span className="break-all">{userData.email}</span>
+                                        <span className="break-all">{userData?.email}</span>
                                     </div>
                                     <div className="flex items-center justify-center lg:justify-start gap-2">
                                         <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-                                        <span>{userData.phone}</span>
+                                        <span>{userData?.phone}</span>
                                     </div>
                                     <div className="flex items-center justify-center lg:justify-start gap-2 md:col-span-2">
                                         <MapPin className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
-                                        <span className="text-center lg:text-left">{userData.address}</span>
+                                        <span className="text-center lg:text-left">{userData?.address}</span>
                                     </div>
                                 </div>
                                 {/* Logout Button */}
@@ -478,6 +564,117 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Edit Profile Modal */}
+            {showEditModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                            <h2 className="text-xl font-bold text-gray-800">Edit Profile</h2>
+                            <button
+                                onClick={closeEditModal}
+                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <X className="w-5 h-5 text-gray-500" />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6">
+                            <form className="space-y-4">
+                                {/* Name Field */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Full Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={editFormData.name}
+                                        onChange={handleEditFormChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+                                        placeholder="Enter your full name"
+                                    />
+                                </div>
+
+                                {/* Email Field */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Email Address
+                                    </label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={editFormData.email}
+                                        onChange={handleEditFormChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+                                        placeholder="Enter your email"
+                                    />
+                                </div>
+
+                                {/* Phone Field */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Phone Number
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={editFormData.phone}
+                                        onChange={handleEditFormChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
+                                        placeholder="Enter your phone number"
+                                    />
+                                </div>
+
+                                {/* Address Field */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Address
+                                    </label>
+                                    <textarea
+                                        name="address"
+                                        value={editFormData.address}
+                                        onChange={handleEditFormChange}
+                                        rows={3}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-none"
+                                        placeholder="Enter your full address"
+                                    />
+                                </div>
+                            </form>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex gap-3 p-6 border-t border-gray-200">
+                            <button
+                                onClick={closeEditModal}
+                                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+                                disabled={isSaving}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveProfile}
+                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={isSaving}
+                            >
+                                {isSaving ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                        Saving...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-4 h-4" />
+                                        Save Changes
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

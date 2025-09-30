@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchPickups, updatePickupStatus, deletePickup } from '../../redux/pickupsSlice';
+import { fetchPickups, updatePickupStatus } from '../../redux/pickupsSlice';
 
 const PICKUPS_PER_PAGE = 5;
 
@@ -48,12 +48,30 @@ const AllPickup = () => {
   const handleDelete = async () => {
     if (selectedPickup) {
       try {
-        await dispatch(deletePickup(selectedPickup._id)).unwrap();
-        alert('Pickup deleted successfully');
-        setShowDeleteModal(false);
-        setSelectedPickup(null);
+        // Make API call to delete pickup - point to backend server
+        const response = await fetch(`http://localhost:5000/api/pickups/${selectedPickup._id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // Add if you have auth
+          }
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.message || 'Failed to delete pickup')
+        }
+
+        // Refresh the pickups list after successful deletion
+        dispatch(fetchPickups())
+        alert('Pickup deleted successfully')
+        setShowDeleteModal(false)
+        setSelectedPickup(null)
       } catch (error) {
-        alert('Failed to delete pickup: ' + error);
+        alert('Failed to delete pickup: ' + (error.message || error))
+        console.error('Delete error:', error)
+        setShowDeleteModal(false)
+        setSelectedPickup(null)
       }
     }
   };

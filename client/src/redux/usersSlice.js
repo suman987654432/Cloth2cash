@@ -14,16 +14,28 @@ export const fetchUsers = createAsyncThunk(
   }
 )
 
+// Async thunk for deleting user
 export const deleteUser = createAsyncThunk(
   'users/deleteUser',
   async (userId, { rejectWithValue }) => {
     try {
-      // Check if delete endpoint exists - adjust URL as per your API
-      return userId
-    } catch (err) {
-      // Better error handling
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to delete user'
-      return rejectWithValue(errorMessage)
+      const response = await fetch(`/api/users/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add authentication headers if needed
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to delete user')
+      }
+      
+      return userId // Return the deleted user ID
+    } catch (error) {
+      return rejectWithValue(error.message)
     }
   }
 )
@@ -67,6 +79,7 @@ const usersSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false
+        // Remove the deleted user from the state
         state.data = state.data.filter(user => user._id !== action.payload)
       })
       .addCase(deleteUser.rejected, (state, action) => {
@@ -93,4 +106,4 @@ const usersSlice = createSlice({
 })
 
 export default usersSlice.reducer
-        
+

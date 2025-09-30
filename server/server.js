@@ -21,6 +21,7 @@ mongoose.connect(process.env.MONGODB_URI)
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/schedule', scheduleRoutes);
+app.use('/api/pickups', scheduleRoutes); // Add this line for pickup endpoints
 
 
 app.get('/', (req, res) => {

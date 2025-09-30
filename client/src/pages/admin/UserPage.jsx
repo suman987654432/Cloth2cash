@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchUsers, deleteUser } from '../../redux/usersSlice'
+import { fetchUsers } from '../../redux/usersSlice'
 
 const USERS_PER_PAGE = 5
 
@@ -31,10 +31,25 @@ const UserPage = () => {
   const handleDelete = async (user) => {
     if (window.confirm(`Are you sure you want to delete user: ${user.name}?`)) {
       try {
-        await dispatch(deleteUser(user._id)).unwrap()
+        // Make API call to delete user - point to backend server
+        const response = await fetch(`http://localhost:5000/api/users/${user._id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` // Add if you have auth
+          }
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.message || 'Failed to delete user')
+        }
+
+        // Refresh the users list after successful deletion
+        dispatch(fetchUsers())
         alert('User deleted successfully')
       } catch (error) {
-        alert('Failed to delete user: ' + error)
+        alert('Failed to delete user: ' + (error.message || error))
         console.error('Delete error:', error)
       }
     }

@@ -50,5 +50,18 @@ router.patch('/:id/status', async (req, res) => {
   }
 });
 
+// DELETE route for deleting a pickup/schedule
+router.delete('/:id', async (req, res) => {
+  try {
+    const pickup = await Schedule.findByIdAndDelete(req.params.id);
+    if (!pickup) {
+      return res.status(404).json({ message: 'Pickup not found' });
+    }
+    res.json({ message: 'Pickup deleted successfully', deletedPickup: pickup });
+  } catch (error) {
+    console.error('Delete pickup error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;
-   

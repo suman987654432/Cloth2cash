@@ -1,6 +1,6 @@
 const express = require('express');
+const User = require('../models/User'); // Make sure this path is correct
 const router = express.Router();
-const User = require('../models/user');
 
 // GET all users
 router.get('/', async (req, res) => {
@@ -91,6 +91,64 @@ router.post('/login', async (req, res) => {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+// DELETE route for deleting a user
+router.delete('/:id', async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ message: 'User deleted successfully', deletedUser: user });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+module.exports = router;
+router.put('/:id', async (req, res) => {
+    try {
+        const { name, email, phone, address } = req.body;
+        
+        // Find and update the user
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            {
+                name,
+                email,
+                phone,
+                address,
+                updatedAt: new Date()
+            },
+            { 
+                new: true, // Return the updated document
+                runValidators: true // Run schema validations
+            }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Don't send password back
+        const { password, ...userResponse } = updatedUser.toObject();
+        
+        res.json({
+            message: 'Profile updated successfully',
+            user: userResponse
+        });
+    } catch (error) {
+        console.error('Update user error:', error);
+        
+        // Handle duplicate email error
+        if (error.code === 11000) {
+            return res.status(400).json({ message: 'Email already exists' });
+        }
+        
+        res.status(500).json({ message: error.message });
+    }
 });
 
 module.exports = router;

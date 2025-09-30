@@ -33,35 +33,21 @@ export const deletePickup = createAsyncThunk(
   'pickups/deletePickup',
   async (pickupId, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem('token');
       const response = await fetch(`/api/pickups/${pickupId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        let errorMessage = 'Failed to delete pickup';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          // If response is not JSON, use status text
-          errorMessage = response.statusText || errorMessage;
+          // Add authentication headers if needed
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
-        throw new Error(errorMessage);
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete pickup');
       }
-
-      // Handle different response types
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        return pickupId;
-      } else {
-        // For 204 No Content or other successful responses without JSON
-        return pickupId;
-      }
+      
+      return pickupId; // Return the deleted pickup ID
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -117,6 +103,7 @@ const pickupsSlice = createSlice({
       })
       .addCase(deletePickup.fulfilled, (state, action) => {
         state.loading = false;
+        // Remove the deleted pickup from the state
         state.data = state.data.filter(pickup => pickup._id !== action.payload);
       })
       .addCase(deletePickup.rejected, (state, action) => {
@@ -127,3 +114,4 @@ const pickupsSlice = createSlice({
 });
 
 export default pickupsSlice.reducer;
+     
