@@ -35,7 +35,7 @@ const PersonalInfo = ({ formData, handleInputChange }) => {
             value={formData.phone}
             onChange={handleInputChange}
             className="w-full px-4 py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
-            placeholder="Enter your phone number"
+            placeholder="Phone number used in log in "
             required
           />
         </div>
@@ -48,7 +48,7 @@ const PersonalInfo = ({ formData, handleInputChange }) => {
             value={formData.email}
             onChange={handleInputChange}
             className="w-full px-4 py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 hover:bg-white"
-            placeholder="Enter your email address"
+            placeholder="email address used in log in"
           />
         </div>
       </div>

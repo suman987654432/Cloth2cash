@@ -123,8 +123,8 @@ router.put('/:id', async (req, res) => {
                 updatedAt: new Date()
             },
             { 
-                new: true, // Return the updated document
-                runValidators: true // Run schema validations
+                new: true, 
+                runValidators: true 
             }
         );
 

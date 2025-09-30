@@ -51,7 +51,6 @@ const ProfilePage = () => {
                 loginDate: loginDate // add loginDate to userData
             });
 
-            // Fetch all pickup orders for the logged-in user
             // eslint-disable-next-line no-undef
             fetchPickupOrders(parsedUser.email, parsedUser.phone || parsedParsedUser.phoneNumber);
         } catch (error) {
