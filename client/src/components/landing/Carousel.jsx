@@ -69,7 +69,7 @@ const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showDots =
 
   return (
     <>
-      <div className="relative w-full max-w-screen-7xl mx-auto bg-white rounded-xl lg:rounded-2xl overflow-hidden h-[90vh] lg:h-[92vh] min-h-[600px] lg:min-h-[400px] max-h-[900px] border border-gray-200">
+      <div className="relative w-full max-w-screen-7xl mx-auto bg-white rounded-2xl overflow-hidden h-[90vh] lg:h-[92vh] min-h-[600px] lg:min-h-[400px] max-h-[900px] shadow-2xl border border-gray-100">
         <div
           className="flex transition-transform duration-700 ease-in-out h-full"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -79,56 +79,82 @@ const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showDots =
               key={slide.id}
               className="w-full flex-shrink-0 h-full relative overflow-hidden"
             >
-              {/* Background Image with Blur */}
+              {/* Background Image with Enhanced Blur */}
               <div className="absolute inset-0">
                 <img 
                   src={slide.image} 
                   alt="Background" 
-                  className="w-full h-full object-cover blur-[2px] scale-105"
+                  className="w-full h-full object-cover blur-[3px] scale-110 brightness-75"
                 />
-                {/* Dark overlay for better text readability */}
-                <div className="absolute inset-0 bg-black/30"></div>
+                {/* Enhanced gradient overlay for better readability */}
+                <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/60"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
               </div>
 
-              {/* Centered Content */}
+              {/* Centered Content with better spacing */}
               <div className="relative z-10 h-full flex items-center justify-center">
-                <div className="text-center px-4 sm:px-6 md:px-8 lg:px-16 max-w-4xl">
-                  <div className="mb-6">
-                    <span className="inline-block px-4 py-2 bg-white/95 backdrop-blur-sm rounded-full text-sm font-medium shadow-sm border text-gray-800">
+                <div className="text-center px-6 sm:px-8 md:px-12 lg:px-20 max-w-5xl">
+                  {/* Step indicator with better styling */}
+                  <div className="mb-8">
+                    <span className="inline-flex items-center px-6 py-3 bg-white/95 backdrop-blur-md rounded-full text-sm font-semibold shadow-lg border border-white/20 text-gray-700 tracking-wide">
+                      <span className="w-2 h-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-3"></span>
                       Step {slide.id} of 4
                     </span>
                   </div>
 
+                  {/* Enhanced heading typography */}
                   <h2
-                    className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight drop-shadow-2xl"
-                    dangerouslySetInnerHTML={{ __html: slide.heading.replace(/text-\w+-\d+/g, 'text-yellow-400') }}
+                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-8 text-white leading-[1.1] tracking-tight"
+                    style={{
+                      textShadow: '0 4px 20px rgba(0,0,0,0.5), 0 2px 10px rgba(0,0,0,0.3)',
+                      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+                    }}
+                    dangerouslySetInnerHTML={{ __html: slide.heading.replace(/text-\w+-\d+/g, 'text-yellow-300') }}
                   />
 
-                  <div className="w-16 h-1 bg-yellow-400 rounded-full mb-6 mx-auto"></div>
+                  {/* Enhanced divider */}
+                  <div className="flex justify-center mb-8">
+                    <div className="w-20 h-1.5 bg-gradient-to-r from-yellow-300 to-yellow-400 rounded-full shadow-lg"></div>
+                  </div>
 
-                  <p className="text-lg sm:text-xl lg:text-2xl text-gray-100 mb-8 leading-relaxed max-w-2xl mx-auto font-normal drop-shadow-lg">
-                    {slide.content}
-                  </p>
+                  {/* Enhanced content text */}
+                  <div className="mb-10 max-w-3xl mx-auto">
+                    <p className="text-xl sm:text-2xl lg:text-3xl text-gray-50 leading-relaxed font-light tracking-wide"
+                       style={{
+                         textShadow: '0 2px 10px rgba(0,0,0,0.4)',
+                         lineHeight: '1.6'
+                       }}>
+                      {slide.content}
+                    </p>
+                  </div>
 
-                  <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 justify-center">
+                  {/* Enhanced button group */}
+                  <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-6 justify-center items-center">
                     <Button
                       variant="primary"
                       size="lg"
-                      className="w-full sm:w-auto text-base px-8 py-3 font-medium hover:scale-105 transition-transform duration-200 shadow-lg"
+                      className="group w-full sm:w-auto text-lg px-10 py-4 font-semibold hover:scale-105 transition-all duration-300 shadow-2xl bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 border-0 rounded-full"
                       onClick={handleGetStarted}
                     >
-                      Get Started
-                      <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
+                      <span className="flex items-center">
+                        Get Started
+                        <svg className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </span>
                     </Button>
                     <Button
                       variant="outline"
                       size="lg"
-                      className="w-full sm:w-auto text-base px-8 py-3 font-medium hover:scale-105 transition-transform duration-200 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
+                      className="group w-full sm:w-auto text-lg px-10 py-4 font-semibold hover:scale-105 transition-all duration-300 bg-white/15 backdrop-blur-md border-2 border-white/40 text-white hover:bg-white/25 hover:border-white/60 rounded-full shadow-xl"
                       onClick={handleLearnMore}
                     >
-                      Learn More
+                      <span className="flex items-center">
+                        Learn More
+                        <svg className="ml-3 w-5 h-5 group-hover:rotate-12 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </span>
                     </Button>
                   </div>
                 </div>
@@ -137,28 +163,51 @@ const Carousel = ({ slides, autoPlay = true, autoPlayInterval = 5000, showDots =
           ))}
         </div>
 
+        {/* Enhanced dots navigation */}
         {showDots && (
-          <div className="absolute bottom-6 lg:bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm">
+          <div className="absolute bottom-8 lg:bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-4 bg-white/25 backdrop-blur-lg rounded-full px-6 py-3 shadow-xl border border-white/20">
             {slidesToShow.map((slide, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`transition-all duration-300 ${index === currentSlide
-                    ? 'w-6 h-2 bg-white rounded-full'
-                    : 'w-2 h-2 bg-white/60 hover:bg-white/80 rounded-full'
+                className={`transition-all duration-300 hover:scale-110 ${index === currentSlide
+                    ? 'w-8 h-3 bg-white rounded-full shadow-lg'
+                    : 'w-3 h-3 bg-white/60 hover:bg-white/80 rounded-full'
                   }`}
+                aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
         )}
 
-        {/* Simple Progress Bar */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-white/20">
+        {/* Enhanced progress bar */}
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-white/20">
           <div
-            className="h-full bg-white transition-all duration-700 ease-out"
+            className="h-full bg-gradient-to-r from-yellow-300 to-yellow-400 transition-all duration-700 ease-out shadow-sm"
             style={{ width: `${((currentSlide + 1) / slidesToShow.length) * 100}%` }}
           />
         </div>
+
+        {/* Navigation arrows for better UX */}
+        <button
+          onClick={() => goToSlide(currentSlide === 0 ? slidesToShow.length - 1 : currentSlide - 1)}
+          className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-200 shadow-lg border border-white/20 hover:scale-110"
+          aria-label="Previous slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        <button
+          onClick={() => goToSlide((currentSlide + 1) % slidesToShow.length)}
+          className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-200 shadow-lg border border-white/20 hover:scale-110"
+          aria-label="Next slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
     </>
   );
