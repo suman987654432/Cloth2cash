@@ -79,9 +79,9 @@ const FeedbackPage = () => {
   if (error) {
     return (
       <div className="p-6">
-        <div className="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg">
-          <p className="font-medium">Error loading feedback:</p>
-          <p className="text-sm">{error}</p>
+        <div className=" px-4 py-3 rounded-lg">
+          <p className="font-medium">Comming Soon...........</p>
+         
         </div>
       </div>
     )
@@ -169,7 +169,7 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
   const [userCount, setUserCount] = React.useState(null)
   const [pickupCount, setPickupCount] = React.useState(null)
-  const [feedbackCount, setFeedbackCount] = React.useState(null)
+  const [feedbackCount] = React.useState(null)
   const [totalWeight, setTotalWeight] = React.useState(null)
   const [chartData, setChartData] = React.useState([])
 
@@ -300,29 +300,7 @@ const Dashboard = () => {
   }, [])
 
   // Add feedback count fetch
-  React.useEffect(() => {
-    const fetchFeedbackCount = async () => {
-      try {
-        console.log('Fetching feedback count from:', 'https://cloth2cash.onrender.com/api/feedback/all')
-        const response = await fetch('https://cloth2cash.onrender.com/api/feedback/all')
-        
-        if (!response.ok) {
-          console.error('Feedback count fetch failed:', response.status)
-          setFeedbackCount(0)
-          return
-        }
-        
-        const data = await response.json()
-        console.log('Feedback count data:', data)
-        
-        setFeedbackCount(Array.isArray(data) ? data.length : 0)
-      } catch (error) {
-        console.error('Error fetching feedback count:', error)
-        setFeedbackCount(0)
-      }
-    }
-    fetchFeedbackCount()
-  }, [])
+ 
 
   const handleSidebarClick = (key) => {
     if (key === "logout") {

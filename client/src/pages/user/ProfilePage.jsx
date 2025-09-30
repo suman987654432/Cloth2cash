@@ -9,21 +9,16 @@ const ProfilePage = () => {
     const [loadingPickups, setLoadingPickups] = useState(false);
     const [pickupError, setPickupError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+ 
     const [editFormData, setEditFormData] = useState({
         name: '',
         email: '',
         phone: '',
         address: ''
     });
-    const [feedbackFormData, setFeedbackFormData] = useState({
-        name: '',
-        address: '',
-        feedback: '',
-        rating: 0
-    });
+ 
     const [isSaving, setIsSaving] = useState(false);
-    const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+   
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -292,98 +287,6 @@ const ProfilePage = () => {
         return !imageUrl || imageUrl.includes('unsplash.com') || imageUrl === '';
     };
 
-    // Handle feedback form input change
-    const handleFeedbackFormChange = (e) => {
-        const { name, value } = e.target;
-        setFeedbackFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    // Handle star rating
-    const handleStarClick = (rating) => {
-        setFeedbackFormData(prev => ({
-            ...prev,
-            rating: rating
-        }));
-    };
-
-    // Handle feedback modal open
-    const handleFeedbackClick = () => {
-        setFeedbackFormData({
-            name: userData?.name || '',
-            address: userData?.address || '',
-            feedback: '',
-            rating: 0
-        });
-        setShowFeedbackModal(true);
-    };
-
-    // Handle feedback submission
-    const handleSubmitFeedback = async () => {
-        try {
-            setIsSubmittingFeedback(true);
-            
-            // Validate form
-            if (!feedbackFormData.name.trim() || !feedbackFormData.address.trim() || !feedbackFormData.feedback.trim() || feedbackFormData.rating === 0) {
-                alert('Please fill all fields and provide a rating');
-                return;
-            }
-
-            console.log('Submitting feedback:', feedbackFormData);
-
-            // Make API call to submit feedback
-            const response = await fetch('https://cloth2cash.onrender.com/api/feedback', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: feedbackFormData.name.trim(),
-                    address: feedbackFormData.address.trim(),
-                    feedback: feedbackFormData.feedback.trim(),
-                    rating: feedbackFormData.rating,
-                    userId: userData?.id,
-                    userEmail: userData?.email,
-                    submittedAt: new Date().toISOString()
-                })
-            });
-
-            console.log('Response status:', response.status);
-            const responseData = await response.json();
-            console.log('Response data:', responseData);
-
-            if (!response.ok) {
-                throw new Error(responseData.message || `HTTP error! status: ${response.status}`);
-            }
-
-            alert('Thank you for your feedback! We appreciate your input.');
-            setShowFeedbackModal(false);
-            setFeedbackFormData({
-                name: '',
-                address: '',
-                feedback: '',
-                rating: 0
-            });
-        } catch (error) {
-            console.error('Error submitting feedback:', error);
-            alert(`Failed to submit feedback: ${error.message}`);
-        } finally {
-            setIsSubmittingFeedback(false);
-        }
-    };
-
-    // Close feedback modal
-    const closeFeedbackModal = () => {
-        setShowFeedbackModal(false);
-        setFeedbackFormData({
-            name: '',
-            address: '',
-            feedback: '',
-            rating: 0
-        });
-    };
 
     if (!userData) {
         return (
@@ -509,6 +412,7 @@ const ProfilePage = () => {
                         ].map(tab => (
                             <button
                                 key={tab.id}
+                                // eslint-disable-next-line no-undef
                                 onClick={() => tab.id === 'feedback' ? handleFeedbackClick() : setActiveTab(tab.id)}
                                 className={`flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-3 sm:py-4 font-medium transition-all duration-200 text-xs sm:text-sm lg:text-base flex-1 min-w-0 ${
                                     activeTab === tab.id && tab.id !== 'feedback'
@@ -828,146 +732,7 @@ const ProfilePage = () => {
                 </div>
             )}
 
-            {/* Feedback Modal */}
-            {showFeedbackModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-auto max-h-[90vh] overflow-y-auto">
-                        {/* Modal Header */}
-                        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                            <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                                <MessageSquare className="w-6 h-6 text-green-600" />
-                                Share Your Feedback
-                            </h2>
-                            <button
-                                onClick={closeFeedbackModal}
-                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                            >
-                                <X className="w-5 h-5 text-gray-500" />
-                            </button>
-                        </div>
-
-                        {/* Modal Body */}
-                        <div className="p-6">
-                            <form className="space-y-5">
-                                {/* Star Rating */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                                        Rate Your Experience
-                                    </label>
-                                    <div className="flex gap-1">
-                                        {[1, 2, 3, 4, 5].map((star) => (
-                                            <button
-                                                key={star}
-                                                type="button"
-                                                onClick={() => handleStarClick(star)}
-                                                className={`p-1 transition-colors ${
-                                                    star <= feedbackFormData.rating
-                                                        ? 'text-yellow-400 hover:text-yellow-500'
-                                                        : 'text-gray-300 hover:text-yellow-300'
-                                                }`}
-                                            >
-                                                <Star 
-                                                    className="w-8 h-8" 
-                                                    fill={star <= feedbackFormData.rating ? 'currentColor' : 'none'} 
-                                                />
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        {feedbackFormData.rating === 0 && 'Please select a rating'}
-                                        {feedbackFormData.rating === 1 && 'Poor'}
-                                        {feedbackFormData.rating === 2 && 'Fair'}
-                                        {feedbackFormData.rating === 3 && 'Good'}
-                                        {feedbackFormData.rating === 4 && 'Very Good'}
-                                        {feedbackFormData.rating === 5 && 'Excellent'}
-                                    </p>
-                                </div>
-
-                                {/* Name Field */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Your Name <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={feedbackFormData.name}
-                                        onChange={handleFeedbackFormChange}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
-                                        placeholder="Enter your full name"
-                                        required
-                                    />
-                                </div>
-
-                                {/* Address Field */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Your Address <span className="text-red-500">*</span>
-                                    </label>
-                                    <textarea
-                                        name="address"
-                                        value={feedbackFormData.address}
-                                        onChange={handleFeedbackFormChange}
-                                        rows={2}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-none"
-                                        placeholder="Enter your address"
-                                        required
-                                    />
-                                </div>
-
-                                {/* Feedback Field */}
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Your Feedback <span className="text-red-500">*</span>
-                                    </label>
-                                    <textarea
-                                        name="feedback"
-                                        value={feedbackFormData.feedback}
-                                        onChange={handleFeedbackFormChange}
-                                        rows={4}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-none"
-                                        placeholder="Please share your experience with our service. Your feedback helps us improve!"
-                                        required
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        {feedbackFormData.feedback.length}/500 characters
-                                    </p>
-                                </div>
-
-                            
-                            </form>
-                        </div>
-
-                        {/* Modal Footer */}
-                        <div className="flex gap-3 p-6 border-t border-gray-200">
-                            <button
-                                onClick={closeFeedbackModal}
-                                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
-                                disabled={isSubmittingFeedback}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleSubmitFeedback}
-                                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={isSubmittingFeedback || !feedbackFormData.name.trim() || !feedbackFormData.address.trim() || !feedbackFormData.feedback.trim() || feedbackFormData.rating === 0}
-                            >
-                                {isSubmittingFeedback ? (
-                                    <>
-                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                        Submitting...
-                                    </>
-                                ) : (
-                                    <>
-                                        <MessageSquare className="w-4 h-4" />
-                                        Submit Feedback
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+         
         </div>
     );
 };
