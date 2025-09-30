@@ -267,6 +267,23 @@ const ProfilePage = () => {
         });
     };
 
+    // Function to generate initials from name
+    const getInitials = (name) => {
+        if (!name) return 'U';
+        
+        const nameParts = name.trim().split(' ');
+        if (nameParts.length === 1) {
+            return nameParts[0].charAt(0).toUpperCase();
+        } else {
+            return nameParts[0].charAt(0).toUpperCase() + nameParts[nameParts.length - 1].charAt(0).toUpperCase();
+        }
+    };
+
+    // Function to check if image is default/placeholder
+    const isDefaultImage = (imageUrl) => {
+        return !imageUrl || imageUrl.includes('unsplash.com') || imageUrl === '';
+    };
+
     if (!userData) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
@@ -286,11 +303,19 @@ const ProfilePage = () => {
                     <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 text-white">
                         <div className="flex flex-col lg:flex-row items-center gap-4 sm:gap-6 lg:gap-8">
                             <div className="relative">
-                                <img
-                                    src={userData?.profileImage}
-                                    alt="Profile"
-                                    className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full border-2 sm:border-4 border-white shadow-lg"
-                                />
+                                {isDefaultImage(userData?.profileImage) ? (
+                                    <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full border-2 sm:border-4 border-white shadow-lg bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                                        <span className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
+                                            {getInitials(userData?.name)}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <img
+                                        src={userData?.profileImage}
+                                        alt="Profile"
+                                        className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full border-2 sm:border-4 border-white shadow-lg object-cover"
+                                    />
+                                )}
                                 <div 
                                     className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 bg-green-400 rounded-full p-1.5 sm:p-2 cursor-pointer hover:bg-yellow-300 transition-colors duration-200"
                                     onClick={handleEditClick}
@@ -582,6 +607,28 @@ const ProfilePage = () => {
                         {/* Modal Body */}
                         <div className="p-6">
                             <form className="space-y-4">
+                                {/* Profile Image Preview */}
+                                <div className="text-center mb-4">
+                                    <div className="relative inline-block">
+                                        {isDefaultImage(userData?.profileImage) ? (
+                                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center border-4 border-gray-200">
+                                                <span className="text-2xl font-bold text-white">
+                                                    {getInitials(editFormData.name || userData?.name)}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <img
+                                                src={userData?.profileImage}
+                                                alt="Profile Preview"
+                                                className="w-20 h-20 rounded-full border-4 border-gray-200 object-cover"
+                                            />
+                                        )}
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        Profile image will show your initials
+                                    </p>
+                                </div>
+
                                 {/* Name Field */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
