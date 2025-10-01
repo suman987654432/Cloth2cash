@@ -1,5 +1,5 @@
 const express = require('express');
-const User = require('../models/User'); // Make sure this path is correct
+const User = require('../models/user'); // Make sure this path is correct
 const router = express.Router();
 
 // Debug middleware for user routes
