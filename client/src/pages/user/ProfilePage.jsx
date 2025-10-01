@@ -39,6 +39,8 @@ const ProfilePage = () => {
 
         try {
             const parsedUser = JSON.parse(user);
+            console.log('Parsed user from localStorage:', parsedUser); // Debug log
+            
             setUserData({
                 id: parsedUser.id || parsedUser._id || 'UC001',
                 name: parsedUser.name || parsedUser.fullName || 'User',
@@ -54,8 +56,7 @@ const ProfilePage = () => {
                 loginDate: loginDate // add loginDate to userData
             });
 
-            // eslint-disable-next-line no-undef
-            fetchPickupOrders(parsedUser.email, parsedUser.phone || parsedParsedUser.phoneNumber);
+            fetchPickupOrders(parsedUser.email, parsedUser.phone || parsedUser.phoneNumber);
         } catch (error) {
             console.error('Error parsing user data:', error);
             navigate('/login');
@@ -222,28 +223,64 @@ const ProfilePage = () => {
         try {
             setIsSaving(true);
             
-            // Make API call to update the user profile
+            // Validate required fields
+            if (!editFormData.name.trim()) {
+                alert('Name is required');
+                return;
+            }
+            if (!editFormData.email.trim()) {
+                alert('Email is required');
+                return;
+            }
+            if (!editFormData.phone.trim()) {
+                alert('Phone is required');
+                return;
+            }
+
+            // Debug: Log the user data and API URL
+            console.log('User data:', userData);
+            console.log('User ID:', userData.id);
+            console.log('User ID length:', userData.id?.length);
+            console.log('API URL:', `https://cloth2cash.onrender.com/api/users/${userData.id}`);
+
+            // Check if user ID is valid MongoDB ObjectId format (24 hex characters)
+            if (!userData.id || userData.id.length !== 24 || !/^[0-9a-fA-F]{24}$/.test(userData.id)) {
+                throw new Error('Invalid user ID format. Please log in again.');
+            }
+
+            // Make API call to update the user profile - USE PRODUCTION URL
             const response = await fetch(`https://cloth2cash.onrender.com/api/users/${userData.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Add auth header like UserPage
                 },
-                body: JSON.stringify(editFormData)
+                body: JSON.stringify({
+                    name: editFormData.name.trim(),
+                    email: editFormData.email.trim(),
+                    phone: editFormData.phone.trim(),
+                    address: editFormData.address.trim()
+                })
             });
+
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to update profile');
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
             }
 
-            const updatedUserFromAPI = await response.json();
+            const result = await response.json();
+            console.log('Profile update response:', result);
 
-            // Update both localStorage and state with the response from API
+            // Update both localStorage and state with the updated data
             const updatedUser = {
                 ...userData,
-                ...editFormData,
-                ...updatedUserFromAPI // Use data returned from API
+                name: editFormData.name.trim(),
+                email: editFormData.email.trim(),
+                phone: editFormData.phone.trim(),
+                address: editFormData.address.trim()
             };
 
             setUserData(updatedUser);
@@ -251,9 +288,19 @@ const ProfilePage = () => {
             
             setShowEditModal(false);
             alert('Profile updated successfully!');
+
         } catch (error) {
             console.error('Error updating profile:', error);
-            alert('Failed to update profile: ' + (error.message || error));
+            
+            // If it's an invalid ID error, suggest re-login
+            if (error.message.includes('Invalid user ID format')) {
+                alert('Invalid user session. Please log in again.');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                navigate('/login');
+            } else {
+                alert('Failed to update profile: ' + (error.message || error));
+            }
         } finally {
             setIsSaving(false);
         }
@@ -403,19 +450,13 @@ const ProfilePage = () => {
                                 id: 'rewards',
                                 label: 'Rewards',
                                 icon: Award
-                            },
-                            {
-                                id: 'feedback',
-                                label: 'Feedback',
-                                icon: MessageSquare
                             }
                         ].map(tab => (
                             <button
                                 key={tab.id}
-                                // eslint-disable-next-line no-undef
-                                onClick={() => tab.id === 'feedback' ? handleFeedbackClick() : setActiveTab(tab.id)}
+                                onClick={() => setActiveTab(tab.id)}
                                 className={`flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-3 sm:py-4 font-medium transition-all duration-200 text-xs sm:text-sm lg:text-base flex-1 min-w-0 ${
-                                    activeTab === tab.id && tab.id !== 'feedback'
+                                    activeTab === tab.id
                                         ? 'text-green-600 border-b-2 border-green-600 bg-green-50'
                                         : 'text-gray-600 hover:text-green-600 hover:bg-green-50'
                                 }`}

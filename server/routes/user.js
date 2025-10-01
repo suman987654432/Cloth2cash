@@ -2,6 +2,12 @@ const express = require('express');
 const User = require('../models/User'); // Make sure this path is correct
 const router = express.Router();
 
+// Debug middleware for user routes
+router.use((req, res, next) => {
+  console.log(`User route accessed: ${req.method} ${req.path}`);
+  next();
+});
+
 // GET all users
 router.get('/', async (req, res) => {
   try {
@@ -107,36 +113,127 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Update user profile
+// Update user profile - Make sure this comes AFTER other specific routes but BEFORE the catch-all
 router.put('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { name, email, phone, address, profileImage } = req.body;
+  try {
+    console.log('PUT request received for user ID:', req.params.id);
+    console.log('Request body:', req.body);
+    
+    const { id } = req.params;
+    const { name, email, phone, address } = req.body;
 
-        // Build update object
-        const updateData = {};
-        if (name) updateData.name = name;
-        if (email) updateData.email = email;
-        if (phone) updateData.phone = phone;
-        if (address) updateData.address = address;
-        if (profileImage !== undefined) updateData.profileImage = profileImage; // Allow empty string to remove image
-
-        const updatedUser = await User.findByIdAndUpdate(
-            id,
-            updateData,
-            { new: true, runValidators: true }
-        ).select('-password');
-
-        if (!updatedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        res.json(updatedUser);
-    } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).json({ message: 'Server error' });
+    // Validate ObjectId format first
+    if (!id || id.length !== 24 || !/^[0-9a-fA-F]{24}$/.test(id)) {
+      console.log('Invalid ObjectId format:', id);
+      return res.status(400).json({ 
+        success: false,
+        message: 'Invalid user ID format. ID must be a 24-character hex string.' 
+      });
     }
+
+    // Validate required fields
+    if (!name || !email || !phone) {
+      console.log('Validation failed: missing required fields');
+      return res.status(400).json({ 
+        success: false,
+        message: 'Name, email, and phone are required fields' 
+      });
+    }
+
+    // Check if user exists
+    const existingUser = await User.findById(id);
+    if (!existingUser) {
+      console.log('User not found with ID:', id);
+      return res.status(404).json({ 
+        success: false,
+        message: 'User not found' 
+      });
+    }
+
+    console.log('Existing user found:', existingUser.email);
+
+    // Check if email is already taken by another user
+    const emailCheck = await User.findOne({ 
+      email: email.trim().toLowerCase(), 
+      _id: { $ne: id } 
+    });
+    
+    if (emailCheck) {
+      console.log('Email already exists for another user:', email);
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email already exists' 
+      });
+    }
+
+    // Update user data
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone.trim(),
+        address: address ? address.trim() : existingUser.address
+      },
+      { 
+        new: true, // Return updated document
+        runValidators: true // Run mongoose validators
+      }
+    );
+
+    console.log('User updated successfully:', updatedUser.email);
+
+    // Remove password from response
+    const userResponse = {
+      id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      address: updatedUser.address,
+      createdAt: updatedUser.createdAt,
+      updatedAt: updatedUser.updatedAt
+    };
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: userResponse
+    });
+
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    
+    // Handle CastError (invalid ObjectId)
+    if (error.name === 'CastError') {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Invalid user ID format' 
+      });
+    }
+    
+    // Handle duplicate email error
+    if (error.code === 11000) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email already exists' 
+      });
+    }
+    
+    // Handle validation errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Validation error', 
+        details: error.message 
+      });
+    }
+    
+    res.status(500).json({ 
+      success: false,
+      message: 'Internal server error',
+      error: error.message 
+    });
+  }
 });
 
 module.exports = router;
-   
