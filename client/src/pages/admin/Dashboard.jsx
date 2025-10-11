@@ -115,27 +115,28 @@ const Dashboard = () => {
         const ordersData = await ordersResponse.json()
         const orders = Array.isArray(ordersData) ? ordersData : []
 
-        // Process data for last 7 days
+        // Process data for last 7 days - showing cumulative totals
         const last7Days = []
         for (let i = 6; i >= 0; i--) {
           const date = new Date()
           date.setDate(date.getDate() - i)
-          const dateString = date.toISOString().split('T')[0]
           
-          const usersOnDate = users.filter(user => {
+          // Count all users created up to this date (cumulative)
+          const usersUpToDate = users.filter(user => {
             const userDate = new Date(user.createdAt || user.date)
-            return userDate.toISOString().split('T')[0] === dateString
+            return userDate <= date
           }).length
 
-          const ordersOnDate = orders.filter(order => {
+          // Count all orders created up to this date (cumulative)
+          const ordersUpToDate = orders.filter(order => {
             const orderDate = new Date(order.createdAt || order.date || order.scheduledDate)
-            return orderDate.toISOString().split('T')[0] === dateString
+            return orderDate <= date
           }).length
 
           last7Days.push({
             date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            users: usersOnDate,
-            orders: ordersOnDate
+            users: usersUpToDate,
+            orders: ordersUpToDate
           })
         }
 
@@ -188,7 +189,7 @@ const Dashboard = () => {
             <div className="grid gap-6 grid-cols-1 xl:grid-cols-2 mb-6 p-6">
               {/* Users Chart */}
               <div className="bg-white rounded-xl shadow p-6 border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Users Trend</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Total Users Growth</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -201,7 +202,7 @@ const Dashboard = () => {
                       stroke="#22c55e" 
                       strokeWidth={3}
                       dot={{ fill: '#22c55e', strokeWidth: 2, r: 5 }}
-                      name="New Users"
+                      name="Total Users"
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -209,7 +210,7 @@ const Dashboard = () => {
 
               {/* Orders Chart */}
               <div className="bg-white rounded-xl shadow p-6 border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Orders Trend</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">Total Orders Growth</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -220,7 +221,7 @@ const Dashboard = () => {
                       dataKey="orders" 
                       fill="#3b82f6" 
                       radius={[4, 4, 0, 0]}
-                      name="Orders"
+                      name="Total Orders"
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -323,4 +324,3 @@ const Dashboard = () => {
 }
 
 export default Dashboard
-                
