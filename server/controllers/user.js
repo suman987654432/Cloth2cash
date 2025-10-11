@@ -7,6 +7,11 @@ const signup = async (req, res) => {
   try {
     const { name, email, password, phone, address } = req.body;
 
+    // Check password length (minimum 2 characters)
+    if (!password || password.length < 2) {
+      return res.status(400).json({ message: 'Password must be at least 2 characters long' });
+    }
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
