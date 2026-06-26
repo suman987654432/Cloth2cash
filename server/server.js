@@ -4,15 +4,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./routes/user');
 const scheduleRoutes = require('./routes/schedule');
-
-
-
 const app = express();
 const PORT = 5000;
-
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+
 
 // Add debugging middleware to log all requests
 app.use((req, res, next) => {
@@ -61,12 +59,12 @@ app.use((err, req, res, next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log('Available routes:');
-  console.log('GET /api/users - Get all users');
-  console.log('POST /api/users/signup - User signup');
-  console.log('POST /api/users/login - User login');
-  console.log('PUT /api/users/:id - Update user profile');
-  console.log('DELETE /api/users/:id - Delete user');
+  // console.log('Available routes:');
+  // console.log('GET /api/users - Get all users');
+  // console.log('POST /api/users/signup - User signup');
+  // console.log('POST /api/users/login - User login');
+  // console.log('PUT /api/users/:id - Update user profile');
+  // console.log('DELETE /api/users/:id - Delete user');
 });
 
 // No changes needed here if your scheduleRoutes handles status update and returns updated pickup.
