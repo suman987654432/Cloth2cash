@@ -47,7 +47,7 @@ const Terms = () => {
 
       <h3 className="text-xl font-semibold text-gray-900 mb-3">Contact Information</h3>
       <p className="text-gray-700">
-        For questions regarding these terms, contact us at piyushkym121@gmail.com or +91 9905929316
+        For questions regarding these terms, contact us at sumanqaj9876@gmail.com or +91 6299974421
       </p>
     </div>
   );

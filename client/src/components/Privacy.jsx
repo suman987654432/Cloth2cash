@@ -41,7 +41,7 @@ const Privacy = () => {
 
       <h3 className="text-xl font-semibold text-gray-900 mb-3">Contact Us</h3>
       <p className="text-gray-700">
-        If you have any questions about this Privacy Policy, please contact us at piyushkym121@gmail.com
+        If you have any questions about this Privacy Policy, please contact us at sumanqaj9876@gmail.com
       </p>
     </div>
   );

@@ -47,7 +47,7 @@ const ContactPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Construct WhatsApp message
-    const whatsappNumber = '9905929316';
+    const whatsappNumber = '6299974421';
     const text = `Name: ${form.name}\nEmail: ${form.email}\nMessage: ${form.message}`;
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
@@ -66,12 +66,12 @@ const ContactPage = () => {
             <div className="bg-white/90 rounded-xl shadow border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📧</div>
               <div className="font-semibold text-gray-700 text-base sm:text-lg">Email</div>
-              <a href="mailto:piyushkym121@gmail.com" className="text-blue-500 hover:underline break-all text-sm sm:text-base">piyushkym121@gmail.com</a>
+              <a href="mailto:sumanqaj9876@gmail.com" className="text-blue-500 hover:underline break-all text-sm sm:text-base">sumanqaj9876@gmail.com</a>
             </div>
             <div className="bg-white/90 rounded-xl shadow border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📞</div>
               <div className="font-semibold text-gray-700 text-base sm:text-lg">Phone</div>
-              <a href="tel:+919905929316" className="text-blue-500 hover:underline text-sm sm:text-base">+91 9905929316</a>
+              <a href="tel:+916299974421" className="text-blue-500 hover:underline text-sm sm:text-base">+91 6299974421</a>
             </div>
             <div className="bg-white/90 rounded-xl shadow border border-blue-100 p-4 sm:p-6 flex flex-col items-center text-center">
               <div className="text-blue-600 text-3xl sm:text-4xl mb-2">📍</div>

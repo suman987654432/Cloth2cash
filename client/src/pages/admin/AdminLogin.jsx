@@ -83,7 +83,7 @@ const AdminLogin = () => {
             </button>
             <div className="mt-4 text-center text-gray-500 text-sm ">
               <div>
-                <span className="font-medium">Email:</span> piyushkym121@gmail.com
+                <span className="font-medium">Email:</span> sumanqaj9876@gmail.com
               </div>
               <div>
                 <span className="font-medium">Pass:</span> suman
